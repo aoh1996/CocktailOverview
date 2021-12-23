@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CocktailOverview</string>
+    <string name="cocktail_image_description">cocktail image</string>
+    <string name="id">id: %1$s</string>
+    <string name="glass">Serve in %1$s</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="get_started">Get Started</string>
+    <string name="skip">Skip</string>
+</resources>
