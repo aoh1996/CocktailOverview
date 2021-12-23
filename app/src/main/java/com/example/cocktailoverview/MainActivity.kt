@@ -36,15 +36,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imageNext: ImageView
     private lateinit var skipTextView: TextView
 
-
+    private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
+        prefs = getSharedPreferences("com.example.cocktailoverview", MODE_PRIVATE)
 
         setFullScreen()
         bind()
@@ -93,6 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startHomeActivity() {
+        prefs.edit().putBoolean("firstrun", false).apply()
         startActivity(Intent(this, HomeActivity::class.java))
     }
 
@@ -144,7 +144,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         skipTextView.setOnClickListener {
-            startHomeActivity()
+//            startHomeActivity()
+            viewPager.currentItem = onboardingItemsAdapter.itemCount - 1
         }
     }
 }
