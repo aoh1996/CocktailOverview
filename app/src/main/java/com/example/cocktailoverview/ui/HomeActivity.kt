@@ -52,7 +52,7 @@ class HomeActivity : AppCompatActivity() {
         super.onResume()
         if (prefs.getBoolean("firstrun", true)) {
             startActivity(Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_TOP))
-            prefs.edit().putBoolean("firstrun", false).apply()
+//            prefs.edit().putBoolean("firstrun", false).apply()
             finish()
         }
     }
