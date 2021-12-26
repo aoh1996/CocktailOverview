@@ -1,6 +1,5 @@
 package com.example.cocktailoverview.ui
 
-import android.app.Activity
 import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
@@ -14,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.fragment.app.viewModels
 import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.example.cocktailoverview.R

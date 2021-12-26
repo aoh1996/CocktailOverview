@@ -7,17 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cocktailoverview.network.Cocktail
 import com.example.cocktailoverview.network.CocktailDbApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
-import kotlin.math.log
 
 enum class Status {LOADING, OK, ERROR}
 
 private const val TAG = "CocktailOverviewVM"
 class CocktailOverviewViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
 
     private val _randomCocktailLiveData = MutableLiveData<Cocktail>()
     val randomCocktailLiveData: LiveData<Cocktail> = _randomCocktailLiveData
@@ -30,13 +27,7 @@ class CocktailOverviewViewModel : ViewModel() {
     private var ingredients: LinkedList<String?> = LinkedList()
 
     init {
-        Log.d(TAG, "ViewModel Init")
-//        val mockupCocktail = Cocktail("0", "Cocktail name", "", "Category", "Alcoholic", "Glass",
-//        "", "", "", "", "", "", "", "", "", "", "", "",
-//        "", "", "")
-//        _randomCocktailLiveData.value = mockupCocktail
         _statusLivaData.value = Status.OK
-        Log.d("STATUS", "OK")
         try {
             getRandomCocktail()
         } catch (e: Exception) {
@@ -50,7 +41,6 @@ class CocktailOverviewViewModel : ViewModel() {
                 if (_statusLivaData.value == Status.OK || _statusLivaData.value == Status.ERROR) {
                     _statusLivaData.value = Status.LOADING
                     Log.d("STATUS", "LOADING")
-//                    delay(1000)
                     ingredients.clear()
                     val randomCocktailList = retrofitService.getRandom()
                     val currentCocktail = randomCocktailList.responseData[0]
