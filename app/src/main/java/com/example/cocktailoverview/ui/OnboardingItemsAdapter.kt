@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
-import coil.transform.RoundedCornersTransformation
 import com.example.cocktailoverview.OnboardingItem
 import com.example.cocktailoverview.R
 

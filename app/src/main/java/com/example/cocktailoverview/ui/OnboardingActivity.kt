@@ -1,4 +1,5 @@
-package com.example.cocktailoverview
+package com.example.cocktailoverview.ui
+
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -7,29 +8,23 @@ import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.WindowCompat
-import androidx.core.view.size
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.example.cocktailoverview.databinding.ActivityMainBinding
-import com.example.cocktailoverview.ui.HomeActivity
-import com.example.cocktailoverview.ui.OnboardingItemsAdapter
+import com.example.cocktailoverview.OnboardingItem
+import com.example.cocktailoverview.R
+import com.example.cocktailoverview.databinding.ActivityOnboardingBinding
 import com.google.android.material.button.MaterialButton
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 import kotlin.system.exitProcess
 
-class MainActivity : AppCompatActivity() {
-
-    private val TAG = "MainActivity"
+class OnboardingActivity : AppCompatActivity() {
 
     private lateinit var onboardingItemsAdapter: OnboardingItemsAdapter
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityOnboardingBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var buttonGetStarted: MaterialButton
     private lateinit var wormDotsIndicator: WormDotsIndicator
@@ -40,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         prefs = getSharedPreferences("com.example.cocktailoverview", MODE_PRIVATE)
@@ -48,14 +43,11 @@ class MainActivity : AppCompatActivity() {
         setFullScreen()
         bind()
         setOnboardingItems()
-
     }
 
     override fun onBackPressed() {
-//        finish()
         finish()
         exitProcess(0)
-//        super.onBackPressed()
     }
 
     private fun setFullScreen() {
@@ -94,6 +86,11 @@ class MainActivity : AppCompatActivity() {
     private fun startHomeActivity() {
         prefs.edit().putBoolean("firstrun", false).apply()
         startActivity(Intent(this, HomeActivity::class.java))
+    }
+
+    private fun startOverviewActivity() {
+        prefs.edit().putBoolean("firstrun", false).apply()
+        startActivity(Intent(this, OverviewActivity::class.java))
     }
 
     fun setOnboardingItems() {
@@ -135,16 +132,15 @@ class MainActivity : AppCompatActivity() {
             if (viewPager.currentItem + 1 < onboardingItemsAdapter.itemCount) {
                 viewPager.currentItem += 1
             } else {
-                startHomeActivity()
+                startOverviewActivity()
             }
         }
 
         buttonGetStarted.setOnClickListener {
-            startHomeActivity()
+            startOverviewActivity()
         }
 
         skipTextView.setOnClickListener {
-//            startHomeActivity()
             viewPager.currentItem = onboardingItemsAdapter.itemCount - 1
         }
     }
