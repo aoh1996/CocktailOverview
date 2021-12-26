@@ -6,4 +6,5 @@
     <string name="ingredients">Ingredients</string>
     <string name="get_started">Get Started</string>
     <string name="skip">Skip</string>
+    <string name="connection_error_swipe_to_retry">CONNECTION ERROR\nSWIPE TO RETRY</string>
 </resources>
