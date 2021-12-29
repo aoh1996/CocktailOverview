@@ -38,26 +38,23 @@ class CategoriesFragment : Fragment() {
 
     private fun onListItemClick(position: Int) {
         Log.d(TAG, "onListItemClick: ${cocktailList[position].category}")
+        TODO("START NEW FRAGMENT -> CATEGORY")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.statusLivaData.observe(viewLifecycleOwner, {status ->
+        viewModel.statusCategoriesLivaData.observe(viewLifecycleOwner, {status ->
+            Log.d(TAG, "categories load status: $status")
             when(status!!) {
                 Status.OK -> {
                     viewModel.categoriesLiveData.observe(viewLifecycleOwner, {cocktails ->
                         cocktailList = cocktails
                         adapter.updateList(cocktailList)
-                        Log.d(TAG, "$cocktailList ")
                     })
                 }
             }
         })
-    }
-
-    private fun onItemClick(position: Int) {
-        
     }
 
 

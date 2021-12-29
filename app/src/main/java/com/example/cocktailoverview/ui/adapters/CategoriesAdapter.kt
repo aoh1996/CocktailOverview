@@ -5,12 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cocktailoverview.R
 import com.example.cocktailoverview.data.Cocktail
-import com.example.cocktailoverview.databinding.CategoryItemBinding
 import java.lang.Exception
 
 private const val TAG = "CategorAdapter"
