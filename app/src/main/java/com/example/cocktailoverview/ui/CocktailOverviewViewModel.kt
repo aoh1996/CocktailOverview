@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cocktailoverview.network.Cocktail
-import com.example.cocktailoverview.network.CocktailDbApi
-import com.example.cocktailoverview.network.Status
+import com.example.cocktailoverview.data.Cocktail
+import com.example.cocktailoverview.data.network.CocktailDbApi
+import com.example.cocktailoverview.data.Status
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*

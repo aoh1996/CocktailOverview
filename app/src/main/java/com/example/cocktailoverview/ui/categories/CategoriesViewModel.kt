@@ -5,17 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cocktailoverview.network.Cocktail
-import com.example.cocktailoverview.network.CocktailDbApi
-import com.example.cocktailoverview.network.Status
+import com.example.cocktailoverview.data.Cocktail
+import com.example.cocktailoverview.data.network.CocktailDbApi
+import com.example.cocktailoverview.data.Status
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 private const val TAG = "CategoriesVM"
 class CategoriesViewModel : ViewModel() {
 
-    private val _categoriesLiveData = MutableLiveData<List<String?>>()
-    val categoriesLiveData: LiveData<List<String?>> = _categoriesLiveData
+    private val _categoriesLiveData = MutableLiveData<List<Cocktail>>()
+    val categoriesLiveData: LiveData<List<Cocktail>> = _categoriesLiveData
 
     private val _statusLivaData = MutableLiveData<Status>()
     val statusLivaData: LiveData<Status> = _statusLivaData
@@ -27,9 +27,9 @@ class CategoriesViewModel : ViewModel() {
         getCategories()
     }
 
-    fun getCategories() {
+    fun getCategories() : List<Cocktail> {
 
-        val categories = mutableListOf<String?>()
+        val categories = mutableListOf<Cocktail>()
 
         viewModelScope.launch {
             try {
@@ -37,8 +37,10 @@ class CategoriesViewModel : ViewModel() {
                     _statusLivaData.value = Status.LOADING
                     val categoriesCocktailList = retrofitService.getCategories()
                     for(cocktail in categoriesCocktailList.responseData) {
-                        categories.add(cocktail.category!!)
+                        categories.add(cocktail)
+                        Log.d(TAG, "${cocktail.category}")
                     }
+                    Log.d(TAG, "\n\n")
                     _categoriesLiveData.value = categories
                     _statusLivaData.value = Status.OK
                 }
@@ -49,5 +51,6 @@ class CategoriesViewModel : ViewModel() {
                 }
             }
         }
+        return categories
     }
 }

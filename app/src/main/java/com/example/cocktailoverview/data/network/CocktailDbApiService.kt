@@ -1,5 +1,7 @@
-package com.example.cocktailoverview.network
+package com.example.cocktailoverview.data.network
 
+import com.example.cocktailoverview.data.Cocktail
+import com.example.cocktailoverview.data.ResponseData
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient

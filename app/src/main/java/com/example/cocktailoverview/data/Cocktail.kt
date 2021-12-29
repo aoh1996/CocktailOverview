@@ -1,4 +1,4 @@
-package com.example.cocktailoverview.network
+package com.example.cocktailoverview.data
 
 import com.squareup.moshi.Json
 

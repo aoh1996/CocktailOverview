@@ -17,7 +17,7 @@ import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.example.cocktailoverview.R
 import com.example.cocktailoverview.databinding.ActivityOverviewBinding
-import com.example.cocktailoverview.network.Status
+import com.example.cocktailoverview.data.Status
 
 class OverviewActivity : AppCompatActivity() {
 
