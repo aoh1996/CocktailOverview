@@ -17,6 +17,9 @@ class CategoriesViewModel : ViewModel() {
     private val _categoriesLiveData = MutableLiveData<List<Cocktail>>()
     val categoriesLiveData: LiveData<List<Cocktail>> = _categoriesLiveData
 
+    private val _categoryItemsLiveData = MutableLiveData<List<Cocktail>>()
+    val categoryItemsLiveData: LiveData<List<Cocktail>> = _categoryItemsLiveData
+
     private val _statusLivaData = MutableLiveData<Status>()
     val statusLivaData: LiveData<Status> = _statusLivaData
 
@@ -52,5 +55,24 @@ class CategoriesViewModel : ViewModel() {
             }
         }
         return categories
+    }
+
+    fun getCategoryItems(category: String) {
+
+        val cocktails = mutableListOf<Cocktail>()
+
+        if (_statusLivaData.value == Status.OK || _statusLivaData.value == Status.ERROR) {
+            _statusLivaData.value = Status.LOADING
+            viewModelScope.launch {
+                val cocktailList = retrofitService.getCategoryItems(category)
+                for(cocktail in cocktailList.responseData) {
+                    cocktails.add(cocktail)
+                    Log.d(TAG, "${cocktail.category}")
+                }
+                _categoryItemsLiveData.value = cocktails
+                _statusLivaData.value = Status.OK
+            }
+
+        }
     }
 }

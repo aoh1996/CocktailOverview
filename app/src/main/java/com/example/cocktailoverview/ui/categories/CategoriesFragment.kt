@@ -30,10 +30,14 @@ class CategoriesFragment : Fragment() {
         _binding = CategoriesFragmentBinding.inflate(inflater, container, false)
         binding.categoriesRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = emptyList()
-        adapter = CategoriesAdapter(cocktailList)
+        adapter = CategoriesAdapter(cocktailList) {position -> onListItemClick(position)}
         binding.categoriesRecycler.adapter = adapter
 
         return binding.root
+    }
+
+    private fun onListItemClick(position: Int) {
+        Log.d(TAG, "onListItemClick: ${cocktailList[position].category}")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,6 +54,10 @@ class CategoriesFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun onItemClick(position: Int) {
+        
     }
 
 

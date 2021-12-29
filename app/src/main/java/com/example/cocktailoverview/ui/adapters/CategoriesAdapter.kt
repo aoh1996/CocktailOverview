@@ -15,25 +15,24 @@ import java.lang.Exception
 
 private const val TAG = "CategorAdapter"
 
-class CategoriesAdapter(private var cocktails: List<Cocktail>) :
+class CategoriesAdapter(private var cocktails: List<Cocktail>, private val onItemClicked: (position: Int) -> Unit) :
     RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder>() {
 
     var mList = cocktails
 
-    inner class CategoriesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        fun bind(cocktail: Cocktail) {
-//            binding.categoryTextView.text = cocktail.category
-//        }
-        val textView: TextView = itemView.findViewById(R.id.categoryTextView)
-    }
+    inner class CategoriesViewHolder(itemView: View, private val onItemClicked: (position: Int) -> Unit) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
-//        return CategoriesViewHolder(CategoryItemBinding.inflate(LayoutInflater.from(parent.context)))
-//    }
-//
-//    override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
-//        holder.bind(cocktails[position])
-//    }
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        val textView: TextView = itemView.findViewById(R.id.categoryTextView)
+
+        override fun onClick(p0: View?) {
+            val position = adapterPosition
+            onItemClicked(position)
+        }
+    }
 
     override fun getItemCount(): Int {
         return mList.size
@@ -41,7 +40,7 @@ class CategoriesAdapter(private var cocktails: List<Cocktail>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
         return CategoriesViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.category_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.category_item, parent, false), onItemClicked
         )
     }
 
