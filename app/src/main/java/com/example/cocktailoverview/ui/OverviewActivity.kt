@@ -17,6 +17,7 @@ import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.example.cocktailoverview.R
 import com.example.cocktailoverview.databinding.ActivityOverviewBinding
+import com.example.cocktailoverview.network.Status
 
 class OverviewActivity : AppCompatActivity() {
 
@@ -52,7 +53,7 @@ class OverviewActivity : AppCompatActivity() {
                     findViewById<LinearLayout>(R.id.cocktailInfoLayout).visibility = View.VISIBLE
 
                     viewModel.randomCocktailLiveData.observe(this, {cocktail ->
-                        if(cocktail!!.thumbnailUrl.isEmpty()) {
+                        if(cocktail!!.thumbnailUrl!!.isEmpty()) {
                             imageView.load(R.drawable.cocktail_mockup) {transformations(
                                 RoundedCornersTransformation(50f)
                             )}

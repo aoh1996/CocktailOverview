@@ -14,11 +14,13 @@
         <activity
             android:name=".ui.OverviewActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreen"/>
         <activity
             android:name=".ui.OnboardingActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreen"/>
         <activity
             android:name=".ui.HomeActivity"
             android:exported="true"

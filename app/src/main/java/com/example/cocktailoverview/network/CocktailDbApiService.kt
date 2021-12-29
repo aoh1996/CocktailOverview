@@ -34,6 +34,9 @@ interface CocktailDbApiService {
 
     @GET("search.php?s={param}")
     suspend fun searchByName(@Path("param") param: String): List<Cocktail>
+
+    @GET("list.php?c=list")
+    suspend fun getCategories(): ResponseData
 }
 
 object CocktailDbApi{

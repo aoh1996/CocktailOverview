@@ -7,12 +7,12 @@ data class ResponseData(
 )
 
 data class Cocktail(
-    @Json(name = "idDrink") val id: String,
-    @Json(name = "strDrink") val name: String,
-    @Json(name = "strDrinkThumb") val thumbnailUrl: String,
-    @Json(name = "strCategory") val category: String,
-    @Json(name = "strAlcoholic") val alcoholic: String,
-    @Json(name = "strGlass") val glass: String,
+    @Json(name = "idDrink") val id: String?,
+    @Json(name = "strDrink") val name: String?,
+    @Json(name = "strDrinkThumb") val thumbnailUrl: String?,
+    @Json(name = "strCategory") val category: String?,
+    @Json(name = "strAlcoholic") val alcoholic: String?,
+    @Json(name = "strGlass") val glass: String?,
     @Json(name = "strIngredient1") val ingredient1: String?,
     @Json(name = "strIngredient2") val ingredient2: String?,
     @Json(name = "strIngredient3") val ingredient3: String?,

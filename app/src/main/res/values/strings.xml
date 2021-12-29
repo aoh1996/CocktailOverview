@@ -7,4 +7,7 @@
     <string name="get_started">Get Started</string>
     <string name="skip">Skip</string>
     <string name="connection_error_swipe_to_retry">CONNECTION ERROR\nSWIPE TO RETRY</string>
+    <string name="title_main">Main</string>
+    <string name="title_categories">Categories</string>
+    <string name="title_favorite">Favorite</string>
 </resources>

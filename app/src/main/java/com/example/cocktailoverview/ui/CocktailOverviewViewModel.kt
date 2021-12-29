@@ -7,11 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cocktailoverview.network.Cocktail
 import com.example.cocktailoverview.network.CocktailDbApi
+import com.example.cocktailoverview.network.Status
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
-
-enum class Status {LOADING, OK, ERROR}
 
 private const val TAG = "CocktailOverviewVM"
 class CocktailOverviewViewModel : ViewModel() {
