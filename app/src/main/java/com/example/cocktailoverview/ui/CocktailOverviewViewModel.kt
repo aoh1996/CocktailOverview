@@ -26,14 +26,14 @@ class CocktailOverviewViewModel : ViewModel() {
     private var ingredients: LinkedList<String?> = LinkedList()
 
     init {
-        _statusLivaData.value = Status.OK
-        try {
-            getRandomCocktail()
-        } catch (e: Exception) {
-            e.message?.let { Log.d(TAG, it) }
-        }
+        _statusLivaData.value = Status.ERROR
+//        try {
+//            getRandomCocktail()
+//        } catch (e: Exception) {
+//            e.message?.let { Log.d(TAG, it) }
+//        }
     }
-    fun getRandomCocktail() {
+    fun getCocktailById(id: String) {
         Log.d(TAG, "getRandomCocktail: started")
         viewModelScope.launch {
             try {
@@ -41,7 +41,7 @@ class CocktailOverviewViewModel : ViewModel() {
                     _statusLivaData.value = Status.LOADING
                     Log.d("STATUS", "LOADING")
                     ingredients.clear()
-                    val randomCocktailList = retrofitService.getRandom()
+                    val randomCocktailList = retrofitService.getCocktailById(id)
                     val currentCocktail = randomCocktailList.responseData[0]
                     _randomCocktailLiveData.value = currentCocktail
                     ingredients.apply {

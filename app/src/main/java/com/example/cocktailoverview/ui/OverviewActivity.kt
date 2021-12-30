@@ -38,8 +38,14 @@ class OverviewActivity : AppCompatActivity() {
         binding = ActivityOverviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val args = intent.extras
+        val cocktailId = args?.getString("cocktail_id")
+        if (cocktailId != null) {
+            viewModel.getCocktailById(cocktailId)
+        }
+
         setFullScreen()
-        bind()
+        bind(cocktailId)
 
     }
 
@@ -134,10 +140,13 @@ class OverviewActivity : AppCompatActivity() {
         }
     }
 
-    private fun bind() {
+    private fun bind(id: String?) {
         binding.swipeRefresh.setOnRefreshListener {
             binding.swipeRefresh.isRefreshing = true
-            viewModel.getRandomCocktail()
+//            viewModel.getRandomCocktail()
+            if (id != null) {
+                viewModel.getCocktailById(id)
+            }
             binding.swipeRefresh.isRefreshing = false
         }
         imageView = binding.imageView

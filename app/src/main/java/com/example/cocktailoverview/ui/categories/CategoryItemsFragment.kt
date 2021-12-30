@@ -1,5 +1,6 @@
 package com.example.cocktailoverview.ui.categories
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Status
 import com.example.cocktailoverview.databinding.CategoriesFragmentBinding
 import com.example.cocktailoverview.databinding.FragmentCategoryItemsBinding
+import com.example.cocktailoverview.ui.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CategoriesAdapter
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
 
@@ -47,6 +49,7 @@ class CategoryItemsFragment : Fragment() {
         binding.categoryItemsRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = emptyList()
         adapter = CocktailsAdapter(cocktailList) {position -> onListItemClick(position)}
+        binding.categoryItemsRecycler.overScrollMode
         binding.categoryItemsRecycler.adapter = adapter
         return binding.root
     }
@@ -80,6 +83,9 @@ class CategoryItemsFragment : Fragment() {
         Log.d(TAG, "onListItemClick: ${cocktailList[position].category}")
 
         val id = cocktailList[position].id
+        val intent = Intent(activity, OverviewActivity::class.java)
+        intent.putExtra("cocktail_id", id)
+        startActivity(intent)
 //        val action = CategoriesFragmentDirections.actionNavigationCategoriesToNavigationCategoryItems(category)
 //        findNavController().navigate(action)
 
