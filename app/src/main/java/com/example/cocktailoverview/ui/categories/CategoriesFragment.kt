@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.databinding.CategoriesFragmentBinding
@@ -38,7 +39,11 @@ class CategoriesFragment : Fragment() {
 
     private fun onListItemClick(position: Int) {
         Log.d(TAG, "onListItemClick: ${cocktailList[position].category}")
-        TODO("START NEW FRAGMENT -> CATEGORY")
+
+        val category = cocktailList[position].category
+        val action = CategoriesFragmentDirections.actionNavigationCategoriesToNavigationCategoryItems(category)
+        findNavController().navigate(action)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -38,8 +39,14 @@ class HomeActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+
         prefs = getSharedPreferences("com.example.cocktailoverview", MODE_PRIVATE)
 
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return Navigation.findNavController(this, R.id.nav_host_fragment_activity_home).navigateUp()
+                || super.onSupportNavigateUp()
     }
 
     override fun onResume() {
@@ -48,9 +55,5 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, OnboardingActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_TOP))
             finish()
         }
-//         else {
-//            startActivity(Intent(this, OverviewActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_TOP))
-//            finish()
-//        }
     }
 }

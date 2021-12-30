@@ -18,21 +18,14 @@ class CategoriesViewModel : ViewModel() {
     private val _categoriesLiveData = MutableLiveData<List<Cocktail>>()
     val categoriesLiveData: LiveData<List<Cocktail>> = _categoriesLiveData
 
-    private val _categoryItemsLiveData = MutableLiveData<List<Cocktail>>()
-    val categoryItemsLiveData: LiveData<List<Cocktail>> = _categoryItemsLiveData
-
     private val _statusCategoriesLivaData = MutableLiveData<Status>()
     val statusCategoriesLivaData: LiveData<Status> = _statusCategoriesLivaData
-
-    private val _statusCocktailsLivaData = MutableLiveData<Status>()
-    val statusCocktailsLivaData: LiveData<Status> = _statusCocktailsLivaData
 
     private val retrofitService = CocktailDbApi.retrofitService
 
     init {
         Log.d(TAG, "init viewModel")
         _statusCategoriesLivaData.value = Status.ERROR
-        _statusCocktailsLivaData.value = Status.ERROR
         viewModelScope.launch {
             getCategories()
         }
@@ -66,29 +59,5 @@ class CategoriesViewModel : ViewModel() {
         }
     }
 
-    suspend fun fetchCategoryItems(category: String) {
-        Log.d(TAG, "fetch started")
-        val cocktails = mutableListOf<Cocktail>()
 
-
-
-        if (_statusCocktailsLivaData.value == Status.OK || _statusCocktailsLivaData.value == Status.ERROR) {
-
-                Log.d(TAG, "fetchCategoryItems: scope launched")
-                _statusCocktailsLivaData.value = Status.LOADING
-                Log.d(TAG, "status change to LOADING")
-
-                val cocktailList = retrofitService.getCategoryItems(category)
-                for (cocktail in cocktailList.responseData) {
-//                    Log.d(TAG, "$cocktail")
-                    cocktails.add(cocktail)
-//                    Log.d(TAG, "${cocktail.category}")
-                }
-                _categoryItemsLiveData.value = cocktails
-                _statusCocktailsLivaData.value = Status.OK
-                Log.d(TAG, "status change to OK")
-
-            Log.d(TAG, "exit scope")
-        }
-    }
 }

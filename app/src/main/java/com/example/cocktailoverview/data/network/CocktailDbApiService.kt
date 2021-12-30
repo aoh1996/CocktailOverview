@@ -43,6 +43,9 @@ interface CocktailDbApiService {
 
     @GET("filter.php")
     suspend fun getCategoryItems(@Query("c") c: String): ResponseData
+
+    @GET("lookup.php")
+    suspend fun getCocktailById(@Query("i") i: String): ResponseData
 }
 
 object CocktailDbApi{

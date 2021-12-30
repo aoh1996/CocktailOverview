@@ -12,10 +12,10 @@ import java.lang.Exception
 
 private const val TAG = "CategorAdapter"
 
-class CategoriesAdapter(private var cocktails: List<Cocktail>, private val onItemClicked: (position: Int) -> Unit) :
+class CategoriesAdapter(cocktails: List<Cocktail>, private val onItemClicked: (position: Int) -> Unit) :
     RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder>() {
 
-    var mList = cocktails
+    private var mList = cocktails
 
     inner class CategoriesViewHolder(itemView: View, private val onItemClicked: (position: Int) -> Unit) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
