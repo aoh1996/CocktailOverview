@@ -132,12 +132,12 @@ class OnboardingActivity : AppCompatActivity() {
             if (viewPager.currentItem + 1 < onboardingItemsAdapter.itemCount) {
                 viewPager.currentItem += 1
             } else {
-                startOverviewActivity()
+                startHomeActivity()
             }
         }
 
         buttonGetStarted.setOnClickListener {
-            startOverviewActivity()
+            startHomeActivity()
         }
 
         skipTextView.setOnClickListener {

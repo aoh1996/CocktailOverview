@@ -1,5 +1,6 @@
 package com.example.cocktailoverview.ui.adapters
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,10 +18,11 @@ import java.lang.Exception
 
 private const val TAG = "CocktailsAdapter"
 
-class CocktailsAdapter(cocktails: List<Cocktail>, private val onItemClicked: (position: Int) -> Unit) :
+class CocktailsAdapter(context: Context, cocktails: List<Cocktail>, private val onItemClicked: (position: Int) -> Unit) :
     RecyclerView.Adapter<CocktailsAdapter.CocktailsViewHolder>(){
 
     private var mList = cocktails
+    private var context = context
 
     inner class CocktailsViewHolder(itemView: View, private val onItemClicked: (position: Int) -> Unit) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
@@ -58,7 +60,7 @@ class CocktailsAdapter(cocktails: List<Cocktail>, private val onItemClicked: (po
                 error(R.drawable.ic_baseline_broken_image_24)
             }
             holder.name.text = currentCocktail.name
-            holder.id.text = currentCocktail.id
+            holder.id.text = String.format(context.getString(R.string.id), currentCocktail.id)
         } catch (e: Exception) {
             Log.d(TAG, "${e.message}")
         }
