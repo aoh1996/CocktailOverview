@@ -120,7 +120,7 @@
 
 
             <ProgressBar
-                android:id="@+id/progressBar"
+                android:id="@+id/cocktailProgressBar"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
                 android:visibility="gone"/>
 
             <TextView
-                android:id="@+id/errorTextView"
+                android:id="@+id/cocktailErrorTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/connection_error_swipe_to_retry"

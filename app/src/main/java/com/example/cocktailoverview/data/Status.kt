@@ -1,3 +1,3 @@
 package com.example.cocktailoverview.data
 
-enum class Status {LOADING, OK, ERROR}
+enum class Status {LOADING, OK, ERROR, UNDEFINED}

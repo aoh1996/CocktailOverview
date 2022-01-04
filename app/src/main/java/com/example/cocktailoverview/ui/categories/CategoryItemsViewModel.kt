@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Status
 import com.example.cocktailoverview.data.network.CocktailDbApi.retrofitService
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -22,7 +23,7 @@ class CategoryItemsViewModel() : ViewModel() {
     val statusLivaData: LiveData<Status> = _statusLivaData
 
     init {
-        _statusLivaData.value = Status.ERROR
+        _statusLivaData.value = Status.UNDEFINED
     }
 
     fun fetchCategoryItems(category: String) {
@@ -30,12 +31,13 @@ class CategoryItemsViewModel() : ViewModel() {
 
         val cocktails = mutableListOf<Cocktail>()
 
-        if (_statusLivaData.value == Status.OK || _statusLivaData.value == Status.ERROR) {
+        if (_statusLivaData.value == Status.OK || _statusLivaData.value == Status.ERROR || _statusLivaData.value == Status.UNDEFINED) {
 
             viewModelScope.launch {
-                Log.d(TAG, "fetchCategoryItems: scope launched")
-                _statusLivaData.value = Status.LOADING
-                Log.d(TAG, "status change to LOADING")
+                val loadingJob = launch {
+                    delay(100)
+                    _statusLivaData.value = Status.LOADING
+                }
 
                 try {
                     val cocktailList = retrofitService.getCategoryItems(category)
@@ -43,8 +45,10 @@ class CategoryItemsViewModel() : ViewModel() {
                         cocktails.add(cocktail)
                     }
                     _categoryItemsLiveData.value = cocktails
+                    loadingJob.cancel()
                     _statusLivaData.value = Status.OK
                 } catch (e: Exception) {
+                    loadingJob.cancel()
                     _statusLivaData.value = Status.ERROR
                     _categoryItemsLiveData.value = emptyList()
                     Log.d(TAG, "${e.message}")

@@ -36,7 +36,7 @@
             android:id="@+id/action_navigation_category_items_to_navigation_categories"
             app:destination="@id/navigation_categories"
             app:popUpTo="@id/navigation_categories"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment

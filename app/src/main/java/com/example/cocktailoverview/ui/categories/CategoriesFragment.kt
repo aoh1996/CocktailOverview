@@ -49,14 +49,32 @@ class CategoriesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.statusCategoriesLivaData.observe(viewLifecycleOwner, {status ->
+        viewModel.statusLivaData.observe(viewLifecycleOwner, { status ->
             Log.d(TAG, "categories load status: $status")
             when(status!!) {
+                Status.UNDEFINED -> {
+                    binding.categoriesRecycler.visibility = View.GONE
+                    binding.categoriesProgressBar.visibility = View.GONE
+                    binding.categoriesErrorTextView.visibility = View.GONE
+                }
                 Status.OK -> {
+                    binding.categoriesErrorTextView.visibility = View.GONE
+                    binding.categoriesProgressBar.visibility = View.GONE
                     viewModel.categoriesLiveData.observe(viewLifecycleOwner, {cocktails ->
                         cocktailList = cocktails
                         adapter.updateList(cocktailList)
                     })
+                    binding.categoriesRecycler.visibility = View.VISIBLE
+                }
+                Status.LOADING -> {
+                    binding.categoriesRecycler.visibility = View.GONE
+                    binding.categoriesErrorTextView.visibility = View.GONE
+                    binding.categoriesProgressBar.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+                    binding.categoriesRecycler.visibility = View.GONE
+                    binding.categoriesProgressBar.visibility = View.GONE
+                    binding.categoriesErrorTextView.visibility = View.VISIBLE
                 }
             }
         })

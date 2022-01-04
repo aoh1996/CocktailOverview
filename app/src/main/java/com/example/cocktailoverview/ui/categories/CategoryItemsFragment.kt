@@ -61,12 +61,30 @@ class CategoryItemsFragment : Fragment() {
         viewModel.statusLivaData.observe(viewLifecycleOwner, {status ->
             Log.d(TAG, "categories load status: $status")
             when(status!!) {
+                Status.UNDEFINED -> {
+                    binding.categoryItemsRecycler.visibility = View.GONE
+                    binding.categoryItemsProgressBar.visibility = View.GONE
+                    binding.categoryItemsErrorTextView.visibility = View.GONE
+                }
                 Status.OK -> {
+                    binding.categoryItemsErrorTextView.visibility = View.GONE
+                    binding.categoryItemsProgressBar.visibility = View.GONE
                     viewModel.categoryItemsLiveData.observe(viewLifecycleOwner, {cocktails ->
                         cocktailList = cocktails
                         Log.d(TAG, "$cocktailList")
                         adapter.updateList(cocktailList)
                     })
+                    binding.categoryItemsRecycler.visibility = View.VISIBLE
+                }
+                Status.LOADING -> {
+                    binding.categoryItemsRecycler.visibility = View.GONE
+                    binding.categoryItemsErrorTextView.visibility = View.GONE
+                    binding.categoryItemsProgressBar.visibility = View.VISIBLE
+                }
+                Status.ERROR -> {
+                    binding.categoryItemsRecycler.visibility = View.GONE
+                    binding.categoryItemsProgressBar.visibility = View.GONE
+                    binding.categoryItemsErrorTextView.visibility = View.VISIBLE
                 }
             }
         })

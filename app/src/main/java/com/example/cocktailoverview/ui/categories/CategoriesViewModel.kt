@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.data.Status
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -18,28 +19,33 @@ class CategoriesViewModel : ViewModel() {
     private val _categoriesLiveData = MutableLiveData<List<Cocktail>>()
     val categoriesLiveData: LiveData<List<Cocktail>> = _categoriesLiveData
 
-    private val _statusCategoriesLivaData = MutableLiveData<Status>()
-    val statusCategoriesLivaData: LiveData<Status> = _statusCategoriesLivaData
+    private val _statusLivaData = MutableLiveData<Status>()
+    val statusLivaData: LiveData<Status> = _statusLivaData
 
     private val retrofitService = CocktailDbApi.retrofitService
 
     init {
         Log.d(TAG, "init viewModel")
-        _statusCategoriesLivaData.value = Status.ERROR
-        viewModelScope.launch {
-            getCategories()
-        }
+        _statusLivaData.value = Status.UNDEFINED
+        getCategories()
 
     }
 
-    private suspend fun getCategories() {
+    private fun getCategories() {
 
         val categories = mutableListOf<Cocktail>()
-        if (_statusCategoriesLivaData.value == Status.ERROR || _statusCategoriesLivaData.value == Status.OK && categories.isEmpty()) {
+        if (_statusLivaData.value == Status.ERROR || _statusLivaData.value == Status.UNDEFINED ||
+            _statusLivaData.value == Status.OK && categories.isEmpty()) {
 
+            viewModelScope.launch {
+
+                val loadingJob = launch {
+                    delay(100)
+                    _statusLivaData.value = Status.LOADING
+                }
                 try {
 
-                    _statusCategoriesLivaData.value = Status.LOADING
+
                     val categoriesCocktailList = retrofitService.getCategories()
                     for (cocktail in categoriesCocktailList.responseData) {
                         categories.add(cocktail)
@@ -47,14 +53,18 @@ class CategoriesViewModel : ViewModel() {
                     }
                     Log.d(TAG, "\n\n")
                     _categoriesLiveData.value = categories
-                    _statusCategoriesLivaData.value = Status.OK
+                    loadingJob.cancel()
+                    _statusLivaData.value = Status.OK
 
                 } catch (e: Exception) {
-                    _statusCategoriesLivaData.value = Status.ERROR
+                    loadingJob.cancel()
+                    _statusLivaData.value = Status.ERROR
                     e.message?.let {
                         Log.d(TAG, it)
                     }
                 }
+
+            }
 
         }
     }

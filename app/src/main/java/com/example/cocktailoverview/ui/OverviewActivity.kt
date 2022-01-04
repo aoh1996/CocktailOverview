@@ -54,9 +54,9 @@ class OverviewActivity : AppCompatActivity() {
         viewModel.statusLivaData.observe(this, {status ->
             when(status!!) {
                 Status.OK -> {
-                    findViewById<TextView>(R.id.errorTextView).visibility = View.GONE
-                    findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
-                    findViewById<LinearLayout>(R.id.cocktailInfoLayout).visibility = View.VISIBLE
+                    binding.cocktailErrorTextView.visibility = View.GONE
+                    binding.cocktailProgressBar.visibility = View.GONE
+                    binding.cocktailInfoLayout.visibility = View.VISIBLE
 
                     viewModel.randomCocktailLiveData.observe(this, {cocktail ->
                         if(cocktail!!.thumbnailUrl!!.isEmpty()) {
@@ -102,14 +102,14 @@ class OverviewActivity : AppCompatActivity() {
                     })
                 }
                 Status.LOADING -> {
-                    findViewById<LinearLayout>(R.id.cocktailInfoLayout).visibility = View.GONE
-                    findViewById<TextView>(R.id.errorTextView).visibility = View.GONE
-                    findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
+                    binding.cocktailInfoLayout.visibility = View.GONE
+                    binding.cocktailErrorTextView.visibility = View.GONE
+                    binding.cocktailProgressBar.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
-                    findViewById<LinearLayout>(R.id.cocktailInfoLayout).visibility = View.GONE
-                    findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
-                    findViewById<TextView>(R.id.errorTextView).visibility = View.VISIBLE
+                    binding.cocktailInfoLayout.visibility = View.GONE
+                    binding.cocktailProgressBar.visibility = View.GONE
+                    binding.cocktailErrorTextView.visibility = View.VISIBLE
                 }
             }
         })

@@ -8,11 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.data.Status
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
 
 private const val TAG = "CocktailOverviewVM"
+
 class CocktailOverviewViewModel : ViewModel() {
 
     private val _randomCocktailLiveData = MutableLiveData<Cocktail>()
@@ -26,19 +28,20 @@ class CocktailOverviewViewModel : ViewModel() {
     private var ingredients: LinkedList<String?> = LinkedList()
 
     init {
-        _statusLivaData.value = Status.ERROR
-//        try {
-//            getRandomCocktail()
-//        } catch (e: Exception) {
-//            e.message?.let { Log.d(TAG, it) }
-//        }
+        _statusLivaData.value = Status.UNDEFINED
     }
+
     fun getCocktailById(id: String) {
         Log.d(TAG, "getRandomCocktail: started")
-        viewModelScope.launch {
-            try {
-                if (_statusLivaData.value == Status.OK || _statusLivaData.value == Status.ERROR) {
+
+        if (_statusLivaData.value == Status.OK || _statusLivaData.value == Status.ERROR || _statusLivaData.value == Status.UNDEFINED) {
+
+            viewModelScope.launch {
+                val loadingJob = launch {
+                    delay(100)
                     _statusLivaData.value = Status.LOADING
+                }
+                try {
                     Log.d("STATUS", "LOADING")
                     ingredients.clear()
                     val randomCocktailList = retrofitService.getCocktailById(id)
@@ -61,18 +64,19 @@ class CocktailOverviewViewModel : ViewModel() {
                         add(currentCocktail.ingredient14)
                         add(currentCocktail.ingredient15)
                     }
+                    loadingJob.cancel()
                     _statusLivaData.value = Status.OK
                     Log.d("STATUS", "OK")
-                }
+                } catch (e: Exception) {
+                    loadingJob.cancel()
+                    _statusLivaData.value = Status.ERROR
+                    Log.d("STATUS", "ERROR")
+                    e.message?.let {
+                        Log.d(TAG, it)
+                    }
 
-            } catch (e: Exception) {
-                _statusLivaData.value = Status.ERROR
-                Log.d("STATUS", "ERROR")
-                e.message?.let {
-                    Log.d(TAG, it)
+                    Log.d(TAG, "getRandomCocktail: finished")
                 }
-
-                Log.d(TAG, "getRandomCocktail: finished")
             }
         }
     }
