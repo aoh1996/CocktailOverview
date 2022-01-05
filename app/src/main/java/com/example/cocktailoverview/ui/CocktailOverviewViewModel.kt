@@ -1,83 +1,131 @@
 package com.example.cocktailoverview.ui
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
+import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.data.Status
-import kotlinx.coroutines.delay
+import com.example.cocktailoverview.data.db.DatabaseItem
+import com.example.cocktailoverview.data.db.FavoritesDAO
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Exception
 import java.util.*
 
 private const val TAG = "CocktailOverviewVM"
 
-class CocktailOverviewViewModel : ViewModel() {
+class CocktailOverviewViewModel(private val application: CocktailOverviewApplication) : AndroidViewModel(application) {
 
-    private val _randomCocktailLiveData = MutableLiveData<Cocktail>()
-    val randomCocktailLiveData: LiveData<Cocktail> = _randomCocktailLiveData
+    private val favoritesDao: FavoritesDAO = application.favoritesDatabase.favoritesDao()
+
+    private val _cocktailLiveData = MutableLiveData<Cocktail>()
+    val cocktailLiveData: LiveData<Cocktail> = _cocktailLiveData
 
     private val _statusLivaData = MutableLiveData<Status>()
     val statusLivaData: LiveData<Status> = _statusLivaData
 
     private val retrofitService = CocktailDbApi.retrofitService
 
-    private var ingredients: LinkedList<String?> = LinkedList()
+    private var databaseItem: DatabaseItem? = null
+
+    var thumbnailBitmap: Bitmap? = null
 
     init {
         _statusLivaData.value = Status.UNDEFINED
     }
 
     fun getCocktailById(id: String) {
-        Log.d(TAG, "getRandomCocktail: started")
 
         if (_statusLivaData.value == Status.OK || _statusLivaData.value == Status.ERROR || _statusLivaData.value == Status.UNDEFINED) {
 
             viewModelScope.launch {
-                val loadingJob = launch {
-                    delay(200)
-                    _statusLivaData.value = Status.LOADING
-                }
+                _statusLivaData.value = Status.LOADING
+                databaseItem = null
+                thumbnailBitmap = null
                 try {
-                    Log.d("STATUS", "LOADING")
-                    ingredients.clear()
                     val randomCocktailList = retrofitService.getCocktailById(id)
                     val currentCocktail = randomCocktailList.responseData[0]
-                    _randomCocktailLiveData.value = currentCocktail
-                    ingredients.apply {
-                        add(currentCocktail.ingredient1)
-                        add(currentCocktail.ingredient2)
-                        add(currentCocktail.ingredient3)
-                        add(currentCocktail.ingredient4)
-                        add(currentCocktail.ingredient5)
-                        add(currentCocktail.ingredient6)
-                        add(currentCocktail.ingredient7)
-                        add(currentCocktail.ingredient8)
-                        add(currentCocktail.ingredient9)
-                        add(currentCocktail.ingredient10)
-                        add(currentCocktail.ingredient11)
-                        add(currentCocktail.ingredient12)
-                        add(currentCocktail.ingredient13)
-                        add(currentCocktail.ingredient14)
-                        add(currentCocktail.ingredient15)
+
+                    withContext(Dispatchers.IO) {
+                        val loader = ImageLoader(application.applicationContext)
+                        val request = ImageRequest.Builder(application.applicationContext)
+                            .data(currentCocktail.thumbnailUrl)
+                            .allowHardware(false) // Disable hardware bitmaps.
+                            .build()
+
+                        val result = (loader.execute(request) as SuccessResult).drawable
+                        thumbnailBitmap = (result as BitmapDrawable).bitmap
+                        currentCocktail.isFavorite = favoritesDao.isRowExist(currentCocktail.id?.toInt()!!)
                     }
-                    loadingJob.cancel()
+
+                    _cocktailLiveData.value = currentCocktail
+                    databaseItem = createDatabaseItem()
+
                     _statusLivaData.value = Status.OK
-                    Log.d("STATUS", "OK")
                 } catch (e: Exception) {
-                    loadingJob.cancel()
+                    databaseItem = null
+                    thumbnailBitmap = null
                     _statusLivaData.value = Status.ERROR
-                    Log.d("STATUS", "ERROR")
+                    e.printStackTrace()
                     e.message?.let {
                         Log.d(TAG, it)
                     }
-
-                    Log.d(TAG, "getRandomCocktail: finished")
                 }
             }
         }
+    }
+
+
+    private fun createDatabaseItem(): DatabaseItem {
+        val localIngredientsList = LinkedList<String>()
+        for (ingredient in cocktailLiveData.value?.ingredientList!!) {
+            if (!ingredient.isNullOrEmpty()) {
+                localIngredientsList.add(ingredient)
+            }
+        }
+        val databaseItem = DatabaseItem(
+            cocktailLiveData.value?.id?.toInt()!!,
+            cocktailLiveData.value?.name!!,
+            cocktailLiveData.value?.thumbnailUrl!!,
+            cocktailLiveData.value?.alcoholic!!,
+            cocktailLiveData.value?.category!!,
+            cocktailLiveData.value?.glass!!,
+            localIngredientsList
+        )
+        return databaseItem
+    }
+
+    fun addToFavorite() {
+        viewModelScope.launch {
+            databaseItem?.let { favoritesDao.insert(it) }
+        }
+    }
+
+    fun deleteFromFavorite() {
+        viewModelScope.launch {
+            databaseItem?.let { favoritesDao.delete(it) }
+        }
+    }
+
+}
+
+/**
+ * Factory class to instantiate the [ViewModel] instance.
+ */
+class CocktailOverviewViewModelFactory(private val application: CocktailOverviewApplication) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CocktailOverviewViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return CocktailOverviewViewModel(application) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

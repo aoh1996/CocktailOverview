@@ -17,7 +17,9 @@ import com.example.cocktailoverview.ui.adapters.CategoriesAdapter
 private const val TAG = "CategoriesFrag"
 class CategoriesFragment : Fragment() {
 
-    private val viewModel by viewModels<CategoriesViewModel>()
+    private val viewModel: CategoriesViewModel by viewModels {
+        CategoriesViewModelFactory()
+    }
 
     private var _binding: CategoriesFragmentBinding? = null
     private val binding get() = _binding!!

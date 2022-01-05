@@ -8,16 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cocktailoverview.R
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Status
-import com.example.cocktailoverview.databinding.CategoriesFragmentBinding
 import com.example.cocktailoverview.databinding.FragmentCategoryItemsBinding
 import com.example.cocktailoverview.ui.OverviewActivity
-import com.example.cocktailoverview.ui.adapters.CategoriesAdapter
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
 
 
@@ -25,7 +21,10 @@ private const val TAG = "CatItemsFrag"
 
 class CategoryItemsFragment : Fragment() {
 
-    private val viewModel by viewModels<CategoryItemsViewModel>()
+    private val viewModel: CategoryItemsViewModel by viewModels {
+        CategoryItemsViewModelFactory()
+    }
+
     private val args: CategoryItemsFragmentArgs by navArgs()
 
     private var _binding: FragmentCategoryItemsBinding? = null
@@ -34,10 +33,6 @@ class CategoryItemsFragment : Fragment() {
     private lateinit var cocktailList: List<Cocktail>
     private var category: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -104,8 +99,6 @@ class CategoryItemsFragment : Fragment() {
         val intent = Intent(activity, OverviewActivity::class.java)
         intent.putExtra("cocktail_id", id)
         startActivity(intent)
-//        val action = CategoriesFragmentDirections.actionNavigationCategoriesToNavigationCategoryItems(category)
-//        findNavController().navigate(action)
 
     }
 }

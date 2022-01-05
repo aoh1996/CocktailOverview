@@ -1,10 +1,7 @@
 package com.example.cocktailoverview.ui.categories
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Status
 import com.example.cocktailoverview.data.network.CocktailDbApi.retrofitService
@@ -59,5 +56,15 @@ class CategoryItemsViewModel() : ViewModel() {
 
             Log.d(TAG, "exit scope")
         }
+    }
+}
+
+class CategoryItemsViewModelFactory() : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CategoryItemsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return CategoryItemsViewModel() as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

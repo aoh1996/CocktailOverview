@@ -1,10 +1,7 @@
 package com.example.cocktailoverview.ui.categories
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.data.Status
@@ -59,6 +56,7 @@ class CategoriesViewModel : ViewModel() {
                 } catch (e: Exception) {
                     loadingJob.cancel()
                     _statusLivaData.value = Status.ERROR
+                    e.printStackTrace()
                     e.message?.let {
                         Log.d(TAG, it)
                     }
@@ -69,5 +67,13 @@ class CategoriesViewModel : ViewModel() {
         }
     }
 
-
+}
+class CategoriesViewModelFactory() : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CategoriesViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return CategoriesViewModel() as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }

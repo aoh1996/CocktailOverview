@@ -28,8 +28,9 @@ data class Cocktail(
     @Json(name = "strIngredient13") val ingredient13: String?,
     @Json(name = "strIngredient14") val ingredient14: String?,
     @Json(name = "strIngredient15") val ingredient15: String?,
-    var isFavorite: Boolean = false
+
 ) {
     val ingredientList = mutableListOf(ingredient1, ingredient2, ingredient3, ingredient4, ingredient5, ingredient6,
         ingredient7, ingredient8, ingredient9, ingredient10, ingredient11, ingredient12, ingredient13, ingredient14, ingredient15)
+    var isFavorite: Boolean = false
 }

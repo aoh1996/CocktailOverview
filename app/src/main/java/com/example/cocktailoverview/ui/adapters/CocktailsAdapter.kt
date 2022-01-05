@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
-import coil.transform.RoundedCornersTransformation
 import com.example.cocktailoverview.R
 import com.example.cocktailoverview.data.Cocktail
 import java.lang.Exception

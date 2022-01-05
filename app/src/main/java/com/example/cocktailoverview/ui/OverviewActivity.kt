@@ -9,21 +9,26 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.viewModels
 import coil.load
 import coil.transform.RoundedCornersTransformation
+import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.R
 import com.example.cocktailoverview.databinding.ActivityOverviewBinding
 import com.example.cocktailoverview.data.Status
 
 class OverviewActivity : AppCompatActivity() {
 
-    private val viewModel by viewModels<CocktailOverviewViewModel>()
+    private val viewModel: CocktailOverviewViewModel by viewModels {
+        CocktailOverviewViewModelFactory(
+            application as CocktailOverviewApplication
+        )
 
-    private lateinit var binding: ActivityOverviewBinding
+    }
+
+    private var _binding:ActivityOverviewBinding? = null
+    private val binding get() = _binding!!
     private lateinit var imageView: ImageView
     private lateinit var nameTextView: TextView
     private lateinit var favoriteImageView: ImageView
@@ -35,7 +40,7 @@ class OverviewActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityOverviewBinding.inflate(layoutInflater)
+        _binding = ActivityOverviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val args = intent.extras
@@ -58,17 +63,17 @@ class OverviewActivity : AppCompatActivity() {
                     binding.cocktailProgressBar.visibility = View.GONE
                     binding.cocktailInfoLayout.visibility = View.VISIBLE
 
-                    viewModel.randomCocktailLiveData.observe(this, {cocktail ->
+                    viewModel.cocktailLiveData.observe(this, { cocktail ->
                         if(cocktail!!.thumbnailUrl!!.isEmpty()) {
                             imageView.load(R.drawable.cocktail_mockup) {transformations(
                                 RoundedCornersTransformation(50f)
                             )}
                         } else {
                             val imageUri = Uri.parse(cocktail.thumbnailUrl)
-                            imageView.load(imageUri){
+                            imageView.load(viewModel.thumbnailBitmap){
                                 placeholder(R.drawable.loading_animation)
                                 transformations(RoundedCornersTransformation(50f))
-                                error(R.drawable.ic_baseline_broken_image_24)
+//                                error(R.drawable.ic_baseline_broken_image_24)
                             }
                         }
 
@@ -81,9 +86,11 @@ class OverviewActivity : AppCompatActivity() {
                         favoriteImageView.setOnClickListener {
                             if (cocktail.isFavorite) {
                                 cocktail.isFavorite = false
+                                viewModel.deleteFromFavorite()
                                 favoriteImageView.load(R.drawable.ic_baseline_favorite_border)
                             } else {
                                 cocktail.isFavorite = true
+                                viewModel.addToFavorite()
                                 favoriteImageView.load(R.drawable.ic_baseline_favorite_liked)
                             }
                         }
@@ -142,12 +149,14 @@ class OverviewActivity : AppCompatActivity() {
 
     private fun bind(id: String?) {
         binding.swipeRefresh.setOnRefreshListener {
-            binding.swipeRefresh.isRefreshing = true
-//            viewModel.getRandomCocktail()
-            if (id != null) {
-                viewModel.getCocktailById(id)
-            }
-            binding.swipeRefresh.isRefreshing = false
+            if (viewModel.statusLivaData.value == Status.ERROR) {
+                binding.swipeRefresh.isRefreshing = true
+                if (id != null) {
+                    viewModel.getCocktailById(id)
+                }
+                binding.swipeRefresh.isRefreshing = false
+            } else binding.swipeRefresh.isRefreshing = false
+
         }
         imageView = binding.imageView
         nameTextView = binding.tvName
@@ -158,4 +167,10 @@ class OverviewActivity : AppCompatActivity() {
         glassTextView = binding.tvGlass
         ingredientListTextView = binding.tvIngredientsList
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }
+
