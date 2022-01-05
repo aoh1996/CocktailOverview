@@ -44,7 +44,6 @@ class CategoryItemsFragment : Fragment() {
         binding.categoryItemsRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = emptyList()
         adapter = CocktailsAdapter(context!!, cocktailList) {position -> onListItemClick(position)}
-        binding.categoryItemsRecycler.overScrollMode
         binding.categoryItemsRecycler.adapter = adapter
         return binding.root
     }
