@@ -53,7 +53,7 @@ class CocktailsAdapter(context: Context, cocktails: List<Cocktail>, private val 
         try {
             val currentCocktail = mList[position]
             Log.d(TAG, "current cocktail: $currentCocktail")
-            val imageUri = Uri.parse(currentCocktail.thumbnailUrl)
+            val imageUri = Uri.parse("${currentCocktail.thumbnailUrl}/preview")
             holder.icon.load(imageUri){
                 placeholder(R.drawable.loading_animation)
                 transformations(CircleCropTransformation())

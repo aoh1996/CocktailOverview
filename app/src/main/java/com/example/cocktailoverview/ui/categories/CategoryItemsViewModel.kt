@@ -35,7 +35,7 @@ class CategoryItemsViewModel() : ViewModel() {
 
             viewModelScope.launch {
                 val loadingJob = launch {
-                    delay(100)
+                    delay(200)
                     _statusLivaData.value = Status.LOADING
                 }
 
