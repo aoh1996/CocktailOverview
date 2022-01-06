@@ -42,9 +42,13 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.cocktailsLiveData.observe(viewLifecycleOwner, {cocktails ->
             cocktailList = cocktails
-//            Log.d(TAG, "$cocktailList")
             adapter.updateList(cocktailList)
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getFavorites()
     }
 
     override fun onDestroyView() {

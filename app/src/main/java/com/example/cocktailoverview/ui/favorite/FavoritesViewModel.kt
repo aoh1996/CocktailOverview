@@ -5,8 +5,7 @@ import androidx.lifecycle.*
 import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.db.FavoritesDAO
-import kotlinx.coroutines.flow.map
-import kotlin.math.log
+import kotlinx.coroutines.launch
 
 private const val TAG = "FavoritesVM"
 class FavoritesViewModel(private val application: CocktailOverviewApplication) : AndroidViewModel(application) {
@@ -20,24 +19,21 @@ class FavoritesViewModel(private val application: CocktailOverviewApplication) :
     private var cocktailFlow: MutableList<Cocktail>? = null
 
     init {
-        cocktailList = mutableListOf<Cocktail>()
-        Log.d(TAG, "startFlow")
-        val flow = favoritesDao.getCocktails()
-        Log.d(TAG, "${flow.value}")
-//        {
-//            Log.d(TAG, "FlowList: $it")
-//            for (favItem in it) {
-//                cocktailList!!.add(
-//                    Cocktail(favItem.id.toString(),
-//                                favItem.name,
-//                                favItem.thumbnailUrl, null,null,null,null,null,null,
-//                    null,null,null,null,null,null,null,null,null,null,
-//                    null,null)
-//                )
-//            }
-//        }
-//        _cocktailsLiveData.value = cocktailList!!
-//        Log.d(TAG, "$cocktailList")
+        getFavorites()
+    }
+
+    fun getFavorites() {
+        cocktailList = mutableListOf()
+        viewModelScope.launch {
+            val list = favoritesDao.getCocktails()
+            for (cocktail in list) {
+                cocktailList!!.add(
+                    Cocktail(cocktail.id.toString(), cocktail.name, cocktail.thumbnailUrl)
+                )
+            }
+            Log.d(TAG, "$list")
+            _cocktailsLiveData.value = cocktailList!!
+        }
     }
 
 

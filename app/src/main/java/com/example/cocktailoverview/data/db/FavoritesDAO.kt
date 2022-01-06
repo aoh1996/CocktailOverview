@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface FavoritesDAO {
 
     @Query("SELECT * from databaseitem ORDER BY name ASC")
-    fun getCocktails(): Flow<List<DatabaseItem>>
+    suspend fun getCocktails(): List<DatabaseItem>
 
     @Query("SELECT * from databaseitem WHERE _id = :id")
     fun getCocktail(id: Int): Flow<DatabaseItem>
