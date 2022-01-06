@@ -29,7 +29,7 @@ class OverviewActivity : AppCompatActivity() {
 
     private var _binding:ActivityOverviewBinding? = null
     private val binding get() = _binding!!
-    private lateinit var imageView: ImageView
+    private lateinit var thumbImageView: ImageView
     private lateinit var nameTextView: TextView
     private lateinit var favoriteImageView: ImageView
     private lateinit var idTextView: TextView
@@ -65,12 +65,12 @@ class OverviewActivity : AppCompatActivity() {
 
                     viewModel.cocktailLiveData.observe(this, { cocktail ->
                         if(cocktail!!.thumbnailUrl!!.isEmpty()) {
-                            imageView.load(R.drawable.cocktail_mockup) {transformations(
+                            thumbImageView.load(R.drawable.cocktail_mockup) {transformations(
                                 RoundedCornersTransformation(50f)
                             )}
                         } else {
                             val imageUri = Uri.parse(cocktail.thumbnailUrl)
-                            imageView.load(viewModel.thumbnailBitmap){
+                            thumbImageView.load(viewModel.thumbnailBitmap){
                                 placeholder(R.drawable.loading_animation)
                                 transformations(RoundedCornersTransformation(50f))
 //                                error(R.drawable.ic_baseline_broken_image_24)
@@ -148,24 +148,27 @@ class OverviewActivity : AppCompatActivity() {
     }
 
     private fun bind(id: String?) {
-        binding.swipeRefresh.setOnRefreshListener {
-            if (viewModel.statusLivaData.value == Status.ERROR) {
-                binding.swipeRefresh.isRefreshing = true
-                if (id != null) {
-                    viewModel.getCocktailById(id)
-                }
-                binding.swipeRefresh.isRefreshing = false
-            } else binding.swipeRefresh.isRefreshing = false
 
+        binding.apply {
+            swipeRefresh.setOnRefreshListener {
+                if (viewModel.statusLivaData.value == Status.ERROR) {
+                    swipeRefresh.isRefreshing = true
+                    if (id != null) {
+                        viewModel.getCocktailById(id)
+                    }
+                    swipeRefresh.isRefreshing = false
+                } else swipeRefresh.isRefreshing = false
+
+            }
+            thumbImageView = ivThumbnail
+            nameTextView = tvName
+            favoriteImageView = ivFavorite
+            idTextView = tvId
+            categoryTextView = tvCategory
+            alcoholicTextView = tvAlcoholic
+            glassTextView = tvGlass
+            ingredientListTextView = tvIngredientsList
         }
-        imageView = binding.imageView
-        nameTextView = binding.tvName
-        favoriteImageView = binding.favoriteImageView
-        idTextView = binding.tvId
-        categoryTextView = binding.tvCategory
-        alcoholicTextView = binding.tvAlcoholic
-        glassTextView = binding.tvGlass
-        ingredientListTextView = binding.tvIngredientsList
     }
 
     override fun onDestroy() {
