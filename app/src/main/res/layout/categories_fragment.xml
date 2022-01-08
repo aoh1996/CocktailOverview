@@ -11,7 +11,7 @@
         android:id="@+id/categories_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/lightGray"
+        android:background="@color/custom_color_recycler_background"
         android:layout_marginBottom="55dp"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"

@@ -3,7 +3,7 @@ package com.example.cocktailoverview.data
 import com.squareup.moshi.Json
 
 data class ResponseData(
-    @Json(name = "drinks") val responseData: List<Cocktail>
+    @Json(name = "drinks") val responseData: List<Cocktail>?
 )
 
 data class Cocktail(

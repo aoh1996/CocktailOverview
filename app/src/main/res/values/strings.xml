@@ -13,4 +13,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="something_went_wrong">Something went wrong =\\</string>
+    <string name="search">Search</string>
+    <string name="connection_error">Connection error</string>
+    <string name="nothing_found">Nothing found</string>
 </resources>

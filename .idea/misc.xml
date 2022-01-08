@@ -4,19 +4,27 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/drawable/ic_baseline_broken_image_24.xml" value="0.26205128205128203" />
+        <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/drawable/ic_baseline_favorite_border.xml" value="0.1703125" />
+        <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/drawable/ic_baseline_favorite_liked.xml" value="0.1703125" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/drawable/ic_favorite_black_24.xml" value="0.14322916666666666" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.14322916666666666" />
+        <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/drawable/ic_search_black_24dp.xml" value="0.1703125" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/activity_home.xml" value="0.12158054711246201" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/activity_main2.xml" value="0.264" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/activity_overview.xml" value="0.18342391304347827" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/categories_fragment.xml" value="0.21195652173913043" />
+        <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/category_item.xml" value="0.15416666666666667" />
+        <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/cocktail_item.xml" value="0.15416666666666667" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/favorite_fragment.xml" value="0.1933876811594203" />
+        <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/favorites_fragment.xml" value="0.15416666666666667" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/fragment_category_items.xml" value="0.12158054711246201" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/fragment_dashboard.xml" value="0.21195652173913043" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/fragment_home.xml" value="0.21195652173913043" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/fragment_notifications.xml" value="0.21195652173913043" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/main_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/layout/onboarding_item_container.xml" value="0.15416666666666667" />
+        <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/menu/appbar_menu.xml" value="0.25" />
         <entry key="..\:/Users/Admin/StudioProjects/CocktailOverview/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="..\:/Users/andrey.evtushenko/Documents/CocktailOverview/app/src/main/res/drawable-v24/loading_img.xml" value="0.21510416666666668" />
         <entry key="..\:/Users/andrey.evtushenko/Documents/CocktailOverview/app/src/main/res/drawable/ic_baseline_favorite_border.xml" value="0.21979166666666666" />

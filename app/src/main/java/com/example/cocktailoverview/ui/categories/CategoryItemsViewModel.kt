@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Status
 import com.example.cocktailoverview.data.network.CocktailDbApi.retrofitService
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -38,7 +39,12 @@ class CategoryItemsViewModel() : ViewModel() {
 
                 try {
                     val cocktailList = retrofitService.getCategoryItems(category)
-                    for (cocktail in cocktailList.responseData) {
+                    if(cocktailList.responseData.isNullOrEmpty()) {
+                        _statusLivaData.value = Status.NOT_FOUND
+                        Log.d(TAG, "${_statusLivaData.value}")
+                        this.cancel()
+                    }
+                    for (cocktail in cocktailList.responseData!!) {
                         cocktails.add(cocktail)
                     }
                     _categoryItemsLiveData.value = cocktails

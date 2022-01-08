@@ -9,4 +9,11 @@
     <color name="gray">#878787</color>
     <color name="lightGray">#C8C8C8</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="custom_color_like">#ED5085</color>
+    <color name="custom_color_primary">#3A3A3A</color>
+    <color name="custom_color_secondary">#7A8CFF</color>
+    <color name="custom_color_background">@color/custom_color_primary</color>
+    <color name="custom_color_recycler_background">#4C4C4C</color>
+    <color name="custom_color_search_icon">@color/lightGray</color>
 </resources>

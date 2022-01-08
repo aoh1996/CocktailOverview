@@ -35,8 +35,8 @@ interface CocktailDbApiService {
     @GET("random.php")
     suspend fun getRandom(): ResponseData
 
-    @GET("search.php?s={param}")
-    suspend fun searchByName(@Path("param") param: String): List<Cocktail>
+    @GET("search.php")
+    suspend fun searchByName(@Query("s") s: String): ResponseData
 
     @GET("list.php?c=list")
     suspend fun getCategories(): ResponseData

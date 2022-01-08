@@ -12,7 +12,7 @@
         android:id="@+id/favoritesRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F8F8F8"
+        android:background="@color/custom_color_recycler_background"
         android:layout_marginBottom="55dp"/>
 
     <ProgressBar

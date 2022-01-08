@@ -17,7 +17,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/bottom_nav_menu"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"/>
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:itemIconTint="@animator/bottom_navigation_selector"
+        app:itemBackground="@color/custom_color_background"
+        app:itemTextColor="@animator/bottom_navigation_selector"/>
 
     <fragment
         android:id="@+id/nav_host_fragment_activity_home"

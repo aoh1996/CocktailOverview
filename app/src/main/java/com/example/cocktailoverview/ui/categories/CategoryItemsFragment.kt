@@ -95,9 +95,11 @@ class CategoryItemsFragment : Fragment() {
         Log.d(TAG, "onListItemClick: ${cocktailList[position].category}")
 
         val id = cocktailList[position].id
-        val intent = Intent(activity, OverviewActivity::class.java)
-        intent.putExtra("cocktail_id", id)
-        startActivity(intent)
+        if (!id.isNullOrEmpty()) {
+            val intent = Intent(activity, OverviewActivity::class.java)
+            intent.putExtra("cocktail_id", id)
+            startActivity(intent)
+        }
 
     }
 }

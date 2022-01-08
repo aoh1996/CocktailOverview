@@ -1,6 +1,5 @@
 package com.example.cocktailoverview.ui
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.util.Log
@@ -15,6 +14,7 @@ import com.example.cocktailoverview.data.Status
 import com.example.cocktailoverview.data.db.DatabaseItem
 import com.example.cocktailoverview.data.db.FavoritesDAO
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.Exception
@@ -51,22 +51,27 @@ class CocktailOverviewViewModel(private val application: CocktailOverviewApplica
                 databaseItem = null
                 thumbnailBitmap = null
                 try {
-                    val randomCocktailList = retrofitService.getCocktailById(id)
-                    val currentCocktail = randomCocktailList.responseData[0]
+                    val cocktailList = retrofitService.getCocktailById(id)
+                    if(cocktailList.responseData.isNullOrEmpty()) {
+                        _statusLivaData.value = Status.NOT_FOUND
+                        Log.d(TAG, "${_statusLivaData.value}")
+                        this.cancel()
+                    }
+                    val currentCocktail = cocktailList.responseData?.get(0)
 
                     withContext(Dispatchers.IO) {
                         val loader = ImageLoader(application.applicationContext)
                         val request = ImageRequest.Builder(application.applicationContext)
-                            .data(currentCocktail.thumbnailUrl)
+                            .data(currentCocktail?.thumbnailUrl)
                             .allowHardware(false) // Disable hardware bitmaps.
                             .build()
 
                         val result = (loader.execute(request) as SuccessResult).drawable
                         thumbnailBitmap = (result as BitmapDrawable).bitmap
-                        currentCocktail.isFavorite = favoritesDao.isRowExist(currentCocktail.id?.toInt()!!)
+                        currentCocktail?.isFavorite = favoritesDao.isRowExist(currentCocktail?.id?.toInt()!!)
                     }
 
-                    _cocktailLiveData.value = currentCocktail
+                    _cocktailLiveData.value = currentCocktail!!
                     databaseItem = createDatabaseItem()
 
                     _statusLivaData.value = Status.OK
