@@ -12,8 +12,9 @@ data class DatabaseItem(
     val name: String,
     @ColumnInfo(name = "url")
     val thumbnailUrl: String,
-    val category: String,
-    val alcoholic: String,
-    val glass: String,
-    val ingredients: List<String>
+    @ColumnInfo(name = "created_at") var createdAt: Long?,
+//    val category: String,
+//    val alcoholic: String,
+//    val glass: String,
+//    val ingredients: List<String>
 )

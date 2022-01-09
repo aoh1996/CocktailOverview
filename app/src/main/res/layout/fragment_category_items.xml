@@ -1,42 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<!--<androidx.constraintlayout.widget.ConstraintLayout-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    tools:context=".ui.categories.CategoriesFragment">-->
+
+    <com.faltenreich.skeletonlayout.SkeletonLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.categories.CategoriesFragment">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/categoryItemsRecycler"
+        android:id="@+id/skeletonLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/custom_color_recycler_background"
-        android:layout_marginBottom="55dp"/>
+        android:layout_marginBottom="55dp">
 
-    <ProgressBar
-        android:id="@+id/categoryItemsProgressBar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/categoryItemsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/custom_color_recycler_background"
+            tools:listitem="@layout/cocktail_item"/>
 
-    <TextView
-        android:id="@+id/categoryItemsErrorTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/connection_error_swipe_to_retry"
-        android:textAlignment="center"
-        android:textSize="32sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+    </com.faltenreich.skeletonlayout.SkeletonLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+<!--    <ProgressBar-->
+<!--        android:id="@+id/categoryItemsProgressBar"-->
+<!--        style="?android:attr/progressBarStyleLarge"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:visibility="gone"/>-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/categoryItemsErrorTextView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/connection_error_swipe_to_retry"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textSize="32sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:visibility="gone"/>-->
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

@@ -44,7 +44,7 @@ class CocktailOverviewViewModel(private val application: CocktailOverviewApplica
 
     fun getCocktailById(id: String) {
 
-        if (_statusLivaData.value == Status.OK || _statusLivaData.value == Status.ERROR || _statusLivaData.value == Status.UNDEFINED) {
+        if (_statusLivaData.value != Status.LOADING) {
 
             viewModelScope.launch {
                 _statusLivaData.value = Status.LOADING
@@ -53,25 +53,26 @@ class CocktailOverviewViewModel(private val application: CocktailOverviewApplica
                 try {
                     val cocktailList = retrofitService.getCocktailById(id)
                     if(cocktailList.responseData.isNullOrEmpty()) {
-                        _statusLivaData.value = Status.NOT_FOUND
+                        _statusLivaData.value = Status.ERROR
                         Log.d(TAG, "${_statusLivaData.value}")
                         this.cancel()
+                        return@launch
                     }
-                    val currentCocktail = cocktailList.responseData?.get(0)
+                    val currentCocktail = cocktailList.responseData[0]
 
                     withContext(Dispatchers.IO) {
                         val loader = ImageLoader(application.applicationContext)
                         val request = ImageRequest.Builder(application.applicationContext)
-                            .data(currentCocktail?.thumbnailUrl)
+                            .data(currentCocktail.thumbnailUrl)
                             .allowHardware(false) // Disable hardware bitmaps.
                             .build()
 
                         val result = (loader.execute(request) as SuccessResult).drawable
                         thumbnailBitmap = (result as BitmapDrawable).bitmap
-                        currentCocktail?.isFavorite = favoritesDao.isRowExist(currentCocktail?.id?.toInt()!!)
+                        currentCocktail.isFavorite = favoritesDao.isRowExist(currentCocktail.id?.toInt()!!)
                     }
 
-                    _cocktailLiveData.value = currentCocktail!!
+                    _cocktailLiveData.value = currentCocktail
                     databaseItem = createDatabaseItem()
 
                     _statusLivaData.value = Status.OK
@@ -100,17 +101,18 @@ class CocktailOverviewViewModel(private val application: CocktailOverviewApplica
             cocktailLiveData.value?.id?.toInt()!!,
             cocktailLiveData.value?.name!!,
             cocktailLiveData.value?.thumbnailUrl!!,
-            cocktailLiveData.value?.alcoholic!!,
-            cocktailLiveData.value?.category!!,
-            cocktailLiveData.value?.glass!!,
-            localIngredientsList
+            null
+//            cocktailLiveData.value?.alcoholic!!,
+//            cocktailLiveData.value?.category!!,
+//            cocktailLiveData.value?.glass!!,
+//            localIngredientsList
         )
         return databaseItem
     }
 
     fun addToFavorite() {
         viewModelScope.launch {
-            databaseItem?.let { favoritesDao.insert(it) }
+            databaseItem?.let { favoritesDao.insertWithTimestamp(it) }
         }
     }
 

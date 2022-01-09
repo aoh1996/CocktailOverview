@@ -14,8 +14,8 @@ private const val TAG = "CatsItemsVW"
 
 class CategoryItemsViewModel() : ViewModel() {
 
-    private val _categoryItemsLiveData = MutableLiveData<List<Cocktail>>()
-    val categoryItemsLiveData: LiveData<List<Cocktail>> = _categoryItemsLiveData
+    private val _categoryItemsLiveData = MutableLiveData<ArrayList<Cocktail>>()
+    val categoryItemsLiveData: LiveData<ArrayList<Cocktail>> = _categoryItemsLiveData
 
     private val _statusLivaData = MutableLiveData<Status>()
     val statusLivaData: LiveData<Status> = _statusLivaData
@@ -27,15 +27,17 @@ class CategoryItemsViewModel() : ViewModel() {
     fun fetchCategoryItems(category: String) {
         Log.d(TAG, "fetch started")
 
-        val cocktails = mutableListOf<Cocktail>()
+        val cocktails = ArrayList<Cocktail>()
 
-        if (_statusLivaData.value == Status.OK || _statusLivaData.value == Status.ERROR || _statusLivaData.value == Status.UNDEFINED) {
+        if (_statusLivaData.value != Status.LOADING) {
 
             viewModelScope.launch {
-                val loadingJob = launch {
-                    delay(200)
-                    _statusLivaData.value = Status.LOADING
-                }
+                _statusLivaData.value = Status.LOADING
+                delay(100)
+//                val loadingJob = launch {
+//                    delay(200)
+//                    _statusLivaData.value = Status.LOADING
+//                }
 
                 try {
                     val cocktailList = retrofitService.getCategoryItems(category)
@@ -48,12 +50,12 @@ class CategoryItemsViewModel() : ViewModel() {
                         cocktails.add(cocktail)
                     }
                     _categoryItemsLiveData.value = cocktails
-                    loadingJob.cancel()
+//                    loadingJob.cancel()
                     _statusLivaData.value = Status.OK
                 } catch (e: Exception) {
-                    loadingJob.cancel()
+//                    loadingJob.cancel()
                     _statusLivaData.value = Status.ERROR
-                    _categoryItemsLiveData.value = emptyList()
+                    _categoryItemsLiveData.value = arrayListOf()
                     Log.d(TAG, "${e.message}")
                 }
 

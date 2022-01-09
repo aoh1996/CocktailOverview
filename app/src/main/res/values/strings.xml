@@ -16,4 +16,6 @@
     <string name="search">Search</string>
     <string name="connection_error">Connection error</string>
     <string name="nothing_found">Nothing found</string>
+    <string name="cocktail_name">Cocktail name</string>
+    <string name="cocktail_id">Cocktail id</string>
 </resources>

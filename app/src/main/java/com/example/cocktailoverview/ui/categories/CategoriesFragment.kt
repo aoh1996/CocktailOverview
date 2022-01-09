@@ -35,6 +35,7 @@ class CategoriesFragment : Fragment() {
         cocktailList = emptyList()
         adapter = CategoriesAdapter(cocktailList) {position -> onListItemClick(position)}
         binding.categoriesRecycler.adapter = adapter
+//        binding.categoriesRecycler.setHasFixedSize(true)
 
         return binding.root
     }

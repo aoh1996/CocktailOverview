@@ -17,7 +17,7 @@ import java.lang.Exception
 
 private const val TAG = "CocktailsAdapter"
 
-class CocktailsAdapter(context: Context, cocktails: List<Cocktail>, private val onItemClicked: (position: Int) -> Unit) :
+class CocktailsAdapter(context: Context, cocktails: ArrayList<Cocktail>, private val onItemClicked: (position: Int) -> Unit) :
     RecyclerView.Adapter<CocktailsAdapter.CocktailsViewHolder>(){
 
     private var mList = cocktails
@@ -69,7 +69,12 @@ class CocktailsAdapter(context: Context, cocktails: List<Cocktail>, private val 
         return mList.size
     }
 
-    fun updateList(newData: List<Cocktail>) {
+    fun removeAt(position: Int) {
+        mList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun updateList(newData: ArrayList<Cocktail>) {
         Log.d(TAG, "updateList: called")
         mList = newData
         Log.d(TAG, "updated with:\n $mList")

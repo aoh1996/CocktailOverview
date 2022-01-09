@@ -8,14 +8,14 @@
     android:layout_height="wrap_content"
     android:padding="10dp">
 
-    <View
-        android:id="@+id/center"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <View-->
+<!--        android:id="@+id/center"-->
+<!--        android:layout_width="1dp"-->
+<!--        android:layout_height="1dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <View
         android:layout_width="56dp"
@@ -30,36 +30,52 @@
         android:id="@+id/cocktail_icon"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:src="@drawable/cocktail_mockup"
-        app:layout_constraintBottom_toBottomOf="@id/center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/center" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-
-    <TextView
-        android:id="@+id/cocktail_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginBottom="3dp"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@id/center"
+        android:orientation="vertical"
         app:layout_constraintStart_toEndOf="@id/cocktail_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintHorizontal_bias="0"
-        tools:text="Name" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/cocktail_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:textColor="@color/darkGray"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@id/cocktail_name"
-        app:layout_constraintTop_toBottomOf="@id/center"
-        tools:text="id" />
+        <TextView
+            android:id="@+id/cocktail_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/cocktail_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintHorizontal_bias="0"
+            android:text="@string/cocktail_name" />
+
+        <TextView
+            android:id="@+id/cocktail_id"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/cocktail_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintHorizontal_bias="0"
+            android:text="@string/cocktail_id" />
+
+    </LinearLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 

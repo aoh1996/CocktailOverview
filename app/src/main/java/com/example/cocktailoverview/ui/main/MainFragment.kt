@@ -4,23 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.SimpleAdapter
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.R
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Status
 import com.example.cocktailoverview.databinding.MainFragmentBinding
 import com.example.cocktailoverview.ui.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
+import com.example.cocktailoverview.ui.adapters.SwipeToDeleteCallback
 
 private const val TAG = "MainFragment"
 
 class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory()
+        MainViewModelFactory(activity?.application as CocktailOverviewApplication)
     }
 
     private var _binding: MainFragmentBinding? = null
@@ -41,17 +46,31 @@ class MainFragment : Fragment() {
         _binding = MainFragmentBinding.inflate(inflater, container, false)
         binding.mainRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = ArrayList()
-        adapter = CocktailsAdapter(context!!, cocktailList) {position -> onListItemClick(position)}
+        adapter =
+            CocktailsAdapter(context!!, cocktailList) { position -> onListItemClick(position) }
         binding.mainRecycler.adapter = adapter
+//        binding.mainRecycler.setHasFixedSize(true)
+        val swipeHandler = object : SwipeToDeleteCallback(context!!) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = binding.mainRecycler.adapter as CocktailsAdapter
+                val position = viewHolder.bindingAdapterPosition
+                val id = cocktailList[position].id
+                viewModel.removeFromHistory(id)
+                adapter.removeAt(position)
+            }
+
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(binding.mainRecycler)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.statusLivaData.observe(viewLifecycleOwner, {status ->
+        viewModel.statusLivaData.observe(viewLifecycleOwner, { status ->
 
-            when(status!!) {
+            when (status!!) {
                 Status.NOT_FOUND -> {
                     binding.mainRecycler.visibility = View.GONE
                     binding.mainProgressBar.visibility = View.GONE
@@ -68,7 +87,7 @@ class MainFragment : Fragment() {
                     binding.mainErrorTextView.visibility = View.GONE
                     binding.mainProgressBar.visibility = View.GONE
                     binding.mainNotFoundTextView.visibility = View.GONE
-                    viewModel.cocktailsLiveData.observe(viewLifecycleOwner, {cocktails ->
+                    viewModel.cocktailsLiveData.observe(viewLifecycleOwner, { cocktails ->
                         cocktailList = cocktails
                         Log.d(TAG, "$cocktailList")
                         adapter.updateList(cocktailList)
@@ -97,7 +116,7 @@ class MainFragment : Fragment() {
         inflater?.inflate(R.menu.appbar_menu, menu)
 
         val searchItem = menu.findItem(R.id.app_bar_search).apply {
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_ALWAYS)
         }
         searchView = searchItem.actionView as SearchView
         searchView.queryHint = "Enter cocktail name..."
@@ -119,6 +138,7 @@ class MainFragment : Fragment() {
                     val size = cocktailList.size
                     cocktailList.clear()
                     adapter.notifyItemRangeRemoved(0, size)
+                    viewModel.getHistory()
                 } else viewModel.textChanged(newText)
                 return false
             }
@@ -127,12 +147,13 @@ class MainFragment : Fragment() {
 
     private fun onListItemClick(position: Int) {
         Log.d(TAG, "onListItemClick: ${cocktailList[position].category}")
+
+        viewModel.addToHistory(cocktailList[position])
         val id = cocktailList[position].id
-        if (!id.isNullOrEmpty()) {
-            val intent = Intent(activity, OverviewActivity::class.java)
-            intent.putExtra("cocktail_id", id)
-            startActivity(intent)
-        }
+        val intent = Intent(activity, OverviewActivity::class.java)
+        intent.putExtra("cocktail_id", id)
+        startActivity(intent)
+
     }
 
 

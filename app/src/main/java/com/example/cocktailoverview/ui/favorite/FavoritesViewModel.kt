@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
+import com.example.cocktailoverview.data.db.DatabaseItem
 import com.example.cocktailoverview.data.db.FavoritesDAO
 import kotlinx.coroutines.launch
 
@@ -12,33 +13,41 @@ class FavoritesViewModel(private val application: CocktailOverviewApplication) :
 
     private val favoritesDao: FavoritesDAO = application.favoritesDatabase.favoritesDao()
 
-    private val _cocktailsLiveData = MutableLiveData<List<Cocktail>>()
-    val cocktailsLiveData: LiveData<List<Cocktail>> = _cocktailsLiveData
+    private val _cocktailsLiveData = MutableLiveData<ArrayList<Cocktail>>()
+    val cocktailsLiveData: LiveData<ArrayList<Cocktail>> = _cocktailsLiveData
 
-    private var cocktailList: MutableList<Cocktail>? = null
-    private var cocktailFlow: MutableList<Cocktail>? = null
+    private var cocktailList = ArrayList<Cocktail>()
 
     init {
         getFavorites()
     }
 
     fun getFavorites() {
-        cocktailList = mutableListOf()
+        cocktailList = arrayListOf()
         viewModelScope.launch {
             val list = favoritesDao.getCocktails()
             for (cocktail in list) {
-                cocktailList!!.add(
+                cocktailList.add(
                     Cocktail(cocktail.id.toString(), cocktail.name, cocktail.thumbnailUrl)
                 )
             }
             Log.d(TAG, "$list")
-            _cocktailsLiveData.value = cocktailList!!
+            _cocktailsLiveData.value = cocktailList
         }
     }
 
-
+    fun removeFromFavorites(id: String?) {
+        if (!id.isNullOrEmpty()) {
+            viewModelScope.launch {
+                val item = favoritesDao.getCocktail(id.toInt())
+                favoritesDao.delete(item)
+            }
+        }
+    }
 
 }
+
+
 
 class FavoritesViewModelFactory(private val application: CocktailOverviewApplication) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
