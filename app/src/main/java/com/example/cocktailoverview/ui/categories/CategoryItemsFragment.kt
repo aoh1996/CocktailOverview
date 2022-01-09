@@ -51,7 +51,7 @@ class CategoryItemsFragment : Fragment() {
         adapter = CocktailsAdapter(context!!, cocktailList) {position -> onListItemClick(position)}
         binding.categoryItemsRecycler.adapter = adapter
 //        binding.categoryItemsRecycler.setHasFixedSize(true)
-        skeleton = binding.categoryItemsRecycler.applySkeleton(R.layout.cocktail_item, 5)
+        skeleton = binding.categoryItemsRecycler.applySkeleton(R.layout.cocktail_item, 7)
         skeleton.maskCornerRadius = 80.0f
         skeleton.maskColor = ContextCompat.getColor(context!!, R.color.lightGray)
         skeleton.shimmerColor = ContextCompat.getColor(context!!, R.color.gray)
