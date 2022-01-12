@@ -6,6 +6,8 @@ import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.db.DatabaseItem
 import com.example.cocktailoverview.data.db.FavoritesDAO
+import com.example.cocktailoverview.data.db.toCocktail
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 private const val TAG = "FavoritesVM"
@@ -23,17 +25,21 @@ class FavoritesViewModel(private val application: CocktailOverviewApplication) :
     }
 
     fun getFavorites() {
+
+
         cocktailList = arrayListOf()
         viewModelScope.launch {
             val list = favoritesDao.getCocktails()
-            for (cocktail in list) {
+            for (item in list) {
                 cocktailList.add(
-                    Cocktail(cocktail.id.toString(), cocktail.name, cocktail.thumbnailUrl)
+//                    Cocktail(cocktail.id.toString(), cocktail.name, cocktail.thumbnailUrl)
+                item.toCocktail()
                 )
             }
             Log.d(TAG, "$list")
             _cocktailsLiveData.value = cocktailList
         }
+
     }
 
     fun removeFromFavorites(id: String?) {

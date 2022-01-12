@@ -3,6 +3,7 @@ package com.example.cocktailoverview.data.db
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.cocktailoverview.data.Cocktail
 
 @Entity
 data class DatabaseItem(
@@ -18,3 +19,11 @@ data class DatabaseItem(
 //    val glass: String,
 //    val ingredients: List<String>
 )
+
+fun DatabaseItem.toCocktail(): Cocktail {
+    return Cocktail(
+        id.toString(),
+        name,
+        thumbnailUrl
+    )
+}
