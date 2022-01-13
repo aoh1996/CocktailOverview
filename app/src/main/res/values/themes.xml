@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/black</item>
         <item name="android:titleTextStyle">@style/ActionBarStyle</item>
-        <item name="android:navigationBarColor">@color/custom_color_background</item>
+<!--        <item name="android:navigationBarColor">@color/custom_color_background</item>-->
         <item name="android:statusBarColor">@color/custom_color_primary</item>
     </style>
 
@@ -42,7 +42,7 @@
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/black</item>
         <item name="android:windowBackground">@color/custom_color_background</item>
-        <item name="android:navigationBarColor">@color/custom_color_background</item>
+<!--        <item name="android:navigationBarColor">@color/custom_color_background</item>-->
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
     </style>

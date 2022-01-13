@@ -29,23 +29,23 @@ class MainViewModel(private val application: CocktailOverviewApplication) : Andr
     private val _statusLivaData = MutableLiveData<Status>()
     val statusLivaData: LiveData<Status> = _statusLivaData
 
+    var pendingQuery: String = ""
+
     val mutex = Mutex()
 
     init {
         _statusLivaData.value = Status.UNDEFINED
-        getHistory()
     }
 
-    fun textChanged(query: String) {
-        Log.d(TAG, "textChanged: $query")
-        fetchItems(query)
+    fun makeSearch() {
+        Log.d(TAG, "textChanged: $pendingQuery")
+        fetchItems(pendingQuery)
 //        viewModelScope.cancel()
 //        _cocktailsLiveData.value?.clear()
 
     }
 
-    fun submitPressed(query: String): String? {
-        Log.d(TAG, "submitPressed: $query")
+    fun submitPressed(): String? {
         cocktailsLiveData.value?.get(0)?.let { addToHistory(it) }
         return cocktailsLiveData.value?.get(0)?.id
     }
@@ -60,6 +60,8 @@ class MainViewModel(private val application: CocktailOverviewApplication) : Andr
             )
             historyDao.insertWithTimestamp(item)
             historyDao.removeOldData()
+            delay(200)
+            getHistory()
         }
     }
 
@@ -73,16 +75,19 @@ class MainViewModel(private val application: CocktailOverviewApplication) : Andr
     }
 
     fun getHistory() {
+        _cocktailsLiveData.value = arrayListOf()
+        Log.d(TAG, "getHistory: liveData = empty list")
         val cocktailList = ArrayList<Cocktail>()
         viewModelScope.launch {
             val list = historyDao.getCocktails()
             if (list.isNotEmpty()) {
                 for (cocktail in list) {
-                    cocktailList!!.add(
+                    cocktailList.add(
                         Cocktail(cocktail.id.toString(), cocktail.name, cocktail.thumbnailUrl)
                     )
                 }
                 _cocktailsLiveData.value = cocktailList
+                Log.d(TAG, "getHistory: LivaData updated")
                 _statusLivaData.value = Status.OK
             }
         }
@@ -115,6 +120,7 @@ class MainViewModel(private val application: CocktailOverviewApplication) : Andr
                             cocktails.add(cocktail)
                         }
                         _cocktailsLiveData.value = cocktails
+                        Log.d(TAG, "fetchItems: livaData updated")
                         loadingJob.cancel()
                         Log.d(TAG, "$cocktails")
                         _statusLivaData.value = Status.OK

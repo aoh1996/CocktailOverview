@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.SimpleAdapter
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -37,19 +36,20 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        Log.d(TAG, "onCreate: ")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        Log.d(TAG, "onCreateView: ")
         _binding = MainFragmentBinding.inflate(inflater, container, false)
         binding.mainRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = ArrayList()
         adapter =
             CocktailsAdapter(context!!, cocktailList) { position -> onListItemClick(position) }
         binding.mainRecycler.adapter = adapter
-//        binding.mainRecycler.setHasFixedSize(true)
         val swipeHandler = object : SwipeToDeleteCallback(context!!) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = binding.mainRecycler.adapter as CocktailsAdapter
@@ -62,6 +62,7 @@ class MainFragment : Fragment() {
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(binding.mainRecycler)
+
         return binding.root
     }
 
@@ -112,8 +113,11 @@ class MainFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
-        inflater?.inflate(R.menu.appbar_menu, menu)
+        inflater.inflate(R.menu.appbar_menu, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
 
         val searchItem = menu.findItem(R.id.app_bar_search).apply {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_ALWAYS)
@@ -122,31 +126,35 @@ class MainFragment : Fragment() {
         searchView.queryHint = "Enter cocktail name..."
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
             override fun onQueryTextSubmit(query: String): Boolean {
-                val id = viewModel.submitPressed(query)
+                val id = viewModel.submitPressed()
                 if (!id.isNullOrEmpty()) {
                     val intent = Intent(activity, OverviewActivity::class.java)
                     intent.putExtra("cocktail_id", id)
                     startActivity(intent)
                 }
-                return false
+                return true
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                Log.d(TAG, "onQueryTextChange: called")
+
                 if (newText.isEmpty()) {
                     val size = cocktailList.size
                     cocktailList.clear()
                     adapter.notifyItemRangeRemoved(0, size)
                     viewModel.getHistory()
-                } else viewModel.textChanged(newText)
-                return false
+
+                } else {
+                    viewModel.pendingQuery = newText
+                    viewModel.makeSearch()
+                }
+                return true
             }
         })
     }
 
     private fun onListItemClick(position: Int) {
-        Log.d(TAG, "onListItemClick: ${cocktailList[position].category}")
 
         viewModel.addToHistory(cocktailList[position])
         val id = cocktailList[position].id
@@ -156,6 +164,15 @@ class MainFragment : Fragment() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart: ")
+        if (viewModel.pendingQuery.isEmpty()) {
+            viewModel.getHistory()
+        } else {
+            viewModel.makeSearch()
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
