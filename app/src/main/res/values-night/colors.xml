@@ -16,6 +16,7 @@
     <color name="custom_color_secondary">#7A8CFF</color>
     <color name="custom_color_background">@color/custom_color_primary</color>
     <color name="custom_color_recycler_background">#4C4C4C</color>
+    <color name="custom_color_viewpager_background">@color/lightGray</color>
     <color name="custom_color_search_icon">@color/lightGray</color>
     <color name="custom_color_delete">#83F44336</color>
 </resources>

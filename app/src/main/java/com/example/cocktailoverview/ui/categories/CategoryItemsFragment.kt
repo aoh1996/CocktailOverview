@@ -19,6 +19,7 @@ import com.example.cocktailoverview.ui.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
 import com.faltenreich.skeletonlayout.Skeleton
 import com.faltenreich.skeletonlayout.applySkeleton
+import com.google.android.material.divider.MaterialDividerItemDecoration
 
 
 private const val TAG = "CatItemsFrag"
@@ -30,33 +31,50 @@ class CategoryItemsFragment : Fragment() {
     }
 
     private val args: CategoryItemsFragmentArgs by navArgs()
-
     private var _binding: FragmentCategoryItemsBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: CocktailsAdapter
     private lateinit var cocktailList: ArrayList<Cocktail>
     private var category: String? = null
     private lateinit var skeleton: Skeleton
+    private lateinit var divider: MaterialDividerItemDecoration
+    private var scale: Float = 0f
+    private var dividerInsetStartPx: Int = 0
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
-
+    ): View {
         _binding = FragmentCategoryItemsBinding.inflate(inflater, container, false)
+        init()
+        return binding.root
+    }
+
+    private fun init() {
         binding.categoryItemsRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = ArrayList()
+
+        // adapter setup
         adapter = CocktailsAdapter(context!!, cocktailList) {position -> onListItemClick(position)}
+
+        // divider setup
+        divider = MaterialDividerItemDecoration(context!!, LinearLayoutManager.VERTICAL)
+        scale = resources.displayMetrics.density
+        dividerInsetStartPx = (85 * scale + 0.5f).toInt()
+        divider.dividerInsetStart = dividerInsetStartPx
+        divider.dividerThickness = 1
+
+        // recycler setup
+        binding.categoryItemsRecycler.addItemDecoration(divider)
         binding.categoryItemsRecycler.adapter = adapter
-//        binding.categoryItemsRecycler.setHasFixedSize(true)
+
+        // skeleton setup
         skeleton = binding.categoryItemsRecycler.applySkeleton(R.layout.cocktail_item, 7)
         skeleton.maskCornerRadius = 80.0f
         skeleton.maskColor = ContextCompat.getColor(context!!, R.color.lightGray)
         skeleton.shimmerColor = ContextCompat.getColor(context!!, R.color.gray)
         skeleton.showShimmer = true
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,34 +86,20 @@ class CategoryItemsFragment : Fragment() {
             when(status!!) {
                 Status.UNDEFINED -> {
                     binding.skeletonLayout.visibility = View.GONE
-//                    binding.categoryItemsRecycler.visibility = View.GONE
-//                    binding.categoryItemsProgressBar.visibility = View.GONE
-//                    binding.categoryItemsErrorTextView.visibility = View.GONE
                 }
                 Status.OK -> {
-//                    binding.categoryItemsErrorTextView.visibility = View.GONE
-//                    binding.categoryItemsProgressBar.visibility = View.GONE
                     viewModel.categoryItemsLiveData.observe(viewLifecycleOwner, {cocktails ->
                         cocktailList = cocktails
                         Log.d(TAG, "$cocktailList")
                         adapter.updateList(cocktailList)
                     })
-//                    binding.categoryItemsRecycler.visibility = View.VISIBLE
                     skeleton.showOriginal()
                 }
                 Status.LOADING -> {
-
-//                    binding.categoryItemsRecycler.visibility = View.VISIBLE
-//                    binding.skeletonLayout.visibility = View.VISIBLE
                     skeleton.showSkeleton()
-//                    binding.categoryItemsErrorTextView.visibility = View.GONE
-//                    binding.categoryItemsProgressBar.visibility = View.GONE
                 }
                 Status.ERROR -> {
                     binding.skeletonLayout.visibility = View.GONE
-//                    binding.categoryItemsRecycler.visibility = View.GONE
-//                    binding.categoryItemsProgressBar.visibility = View.GONE
-//                    binding.categoryItemsErrorTextView.visibility = View.VISIBLE
                 }
             }
         })

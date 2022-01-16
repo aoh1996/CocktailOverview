@@ -17,6 +17,7 @@ import com.example.cocktailoverview.databinding.FavoritesFragmentBinding
 import com.example.cocktailoverview.ui.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
 import com.example.cocktailoverview.ui.adapters.SwipeToDeleteCallback
+import com.google.android.material.divider.MaterialDividerItemDecoration
 
 private const val TAG = "FavFrag"
 
@@ -31,17 +32,38 @@ class FavoritesFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: CocktailsAdapter
     private lateinit var cocktailList: ArrayList<Cocktail>
+    private lateinit var divider: MaterialDividerItemDecoration
+    private var scale: Float = 0f
+    private var dividerInsetStartPx: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FavoritesFragmentBinding.inflate(inflater, container, false)
+        init()
+        return binding.root
+    }
+
+    private fun init() {
         binding.favoritesRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = arrayListOf()
+
+        //adapter setup
         adapter = CocktailsAdapter(context!!, cocktailList) {position -> onListItemClick(position)}
+
+        //divider setup
+        divider = MaterialDividerItemDecoration(context!!, LinearLayoutManager.VERTICAL)
+        scale = resources.displayMetrics.density
+        dividerInsetStartPx = (85 * scale + 0.5f).toInt()
+        divider.dividerInsetStart = dividerInsetStartPx
+        divider.dividerThickness = 1
+
+        // recycler setup
+        binding.favoritesRecycler.addItemDecoration(divider)
         binding.favoritesRecycler.adapter = adapter
-//        binding.favoritesRecycler.setHasFixedSize(true)
+
+        // swipe to delete
         val swipeHandler = object : SwipeToDeleteCallback(context!!) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = binding.favoritesRecycler.adapter as CocktailsAdapter
@@ -54,7 +76,6 @@ class FavoritesFragment : Fragment() {
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(binding.favoritesRecycler)
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,12 +98,10 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun onListItemClick(position: Int) {
-
         val id = cocktailList[position].id
         val intent = Intent(activity, OverviewActivity::class.java)
         intent.putExtra("cocktail_id", id)
         startActivity(intent)
-
     }
 
 }

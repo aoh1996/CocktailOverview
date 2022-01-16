@@ -17,6 +17,7 @@
     <color name="custom_color_secondary_disabled">#979797</color>
     <color name="custom_color_button_outer_background">#656565</color>
     <color name="custom_color_background">#FFFFFF</color>
+    <color name="custom_color_viewpager_background">@color/custom_color_background</color>
     <color name="custom_color_recycler_background">#F1F1F1</color>
     <color name="custom_color_search_icon">@color/white</color>
     <color name="custom_color_delete">#f44336</color>

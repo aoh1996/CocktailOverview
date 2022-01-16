@@ -8,6 +8,7 @@ import com.example.cocktailoverview.data.Status
 import com.example.cocktailoverview.data.db.DatabaseItem
 import com.example.cocktailoverview.data.db.FavoritesDAO
 import com.example.cocktailoverview.data.db.HistoryDAO
+import com.example.cocktailoverview.data.db.toCocktail
 import com.example.cocktailoverview.data.network.CocktailDbApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -35,6 +36,11 @@ class MainViewModel(private val application: CocktailOverviewApplication) : Andr
 
     init {
         _statusLivaData.value = Status.UNDEFINED
+        if (pendingQuery.isEmpty()) {
+            getHistory()
+        } else {
+            makeSearch()
+        }
     }
 
     fun makeSearch() {
@@ -61,7 +67,6 @@ class MainViewModel(private val application: CocktailOverviewApplication) : Andr
             historyDao.insertWithTimestamp(item)
             historyDao.removeOldData()
             delay(200)
-            getHistory()
         }
     }
 
@@ -75,15 +80,15 @@ class MainViewModel(private val application: CocktailOverviewApplication) : Andr
     }
 
     fun getHistory() {
-        _cocktailsLiveData.value = arrayListOf()
-        Log.d(TAG, "getHistory: liveData = empty list")
+//        _cocktailsLiveData.value = arrayListOf()
+        Log.d(TAG, "getHistory: called")
         val cocktailList = ArrayList<Cocktail>()
         viewModelScope.launch {
             val list = historyDao.getCocktails()
             if (list.isNotEmpty()) {
-                for (cocktail in list) {
+                for (cocktailItem in list) {
                     cocktailList.add(
-                        Cocktail(cocktail.id.toString(), cocktail.name, cocktail.thumbnailUrl)
+                        cocktailItem.toCocktail()
                     )
                 }
                 _cocktailsLiveData.value = cocktailList

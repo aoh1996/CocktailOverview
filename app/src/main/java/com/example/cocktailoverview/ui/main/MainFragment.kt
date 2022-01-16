@@ -18,6 +18,7 @@ import com.example.cocktailoverview.databinding.MainFragmentBinding
 import com.example.cocktailoverview.ui.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
 import com.example.cocktailoverview.ui.adapters.SwipeToDeleteCallback
+import com.google.android.material.divider.MaterialDividerItemDecoration
 
 private const val TAG = "MainFragment"
 
@@ -32,6 +33,9 @@ class MainFragment : Fragment() {
     private lateinit var adapter: CocktailsAdapter
     private lateinit var cocktailList: ArrayList<Cocktail>
     private lateinit var searchView: SearchView
+    private lateinit var divider: MaterialDividerItemDecoration
+    private var scale: Float = 0f
+    private var dividerInsetStartPx: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,11 +49,29 @@ class MainFragment : Fragment() {
     ): View {
         Log.d(TAG, "onCreateView: ")
         _binding = MainFragmentBinding.inflate(inflater, container, false)
+        init()
+        return binding.root
+    }
+
+    private fun init() {
         binding.mainRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = ArrayList()
-        adapter =
-            CocktailsAdapter(context!!, cocktailList) { position -> onListItemClick(position) }
+
+        // adapter setup
+        adapter = CocktailsAdapter(context!!, cocktailList) { position -> onListItemClick(position) }
+
+        // divider setup
+        divider = MaterialDividerItemDecoration(context!!, LinearLayoutManager.VERTICAL)
+        scale = resources.displayMetrics.density
+        dividerInsetStartPx = (85 * scale + 0.5f).toInt()
+        divider.dividerInsetStart = dividerInsetStartPx
+        divider.dividerThickness = 1
+
+        // recycler setup
+        binding.mainRecycler.addItemDecoration(divider)
         binding.mainRecycler.adapter = adapter
+
+        // swipe to delete
         val swipeHandler = object : SwipeToDeleteCallback(context!!) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = binding.mainRecycler.adapter as CocktailsAdapter
@@ -63,12 +85,11 @@ class MainFragment : Fragment() {
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
         itemTouchHelper.attachToRecyclerView(binding.mainRecycler)
 
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        Log.d(TAG, "onViewCreated: ")
         viewModel.statusLivaData.observe(viewLifecycleOwner, { status ->
 
             when (status!!) {
@@ -113,12 +134,13 @@ class MainFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
+        Log.d(TAG, "onCreateOptionsMenu: ")
         inflater.inflate(R.menu.appbar_menu, menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-
+        Log.d(TAG, "onPrepareOptionsMenu: ")
         val searchItem = menu.findItem(R.id.app_bar_search).apply {
             setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW or MenuItem.SHOW_AS_ACTION_ALWAYS)
         }
@@ -143,6 +165,7 @@ class MainFragment : Fragment() {
                     val size = cocktailList.size
                     cocktailList.clear()
                     adapter.notifyItemRangeRemoved(0, size)
+                    viewModel.pendingQuery = ""
                     viewModel.getHistory()
 
                 } else {
@@ -164,19 +187,8 @@ class MainFragment : Fragment() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart: ")
-        if (viewModel.pendingQuery.isEmpty()) {
-            viewModel.getHistory()
-        } else {
-            viewModel.makeSearch()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }
