@@ -21,7 +21,7 @@
             android:name=".ui.OnboardingActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/FullScreen"/>
+            android:theme="@style/FullScreenOnboarding"/>
         <activity
             android:name=".ui.HomeActivity"
             android:exported="true"
