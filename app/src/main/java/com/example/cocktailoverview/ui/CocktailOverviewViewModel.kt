@@ -9,10 +9,9 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
-import com.example.cocktailoverview.data.network.CocktailDbApi
+import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.data.Status
 import com.example.cocktailoverview.data.db.DatabaseItem
-import com.example.cocktailoverview.data.db.FavoritesDAO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -22,9 +21,12 @@ import java.util.*
 
 private const val TAG = "CocktailOverviewVM"
 
-class CocktailOverviewViewModel(private val application: CocktailOverviewApplication) : AndroidViewModel(application) {
+class CocktailOverviewViewModel(private val repository: Repository, private val application: CocktailOverviewApplication) : AndroidViewModel(application) {
 
-    private val favoritesDao: FavoritesDAO = application.favoritesDatabase.favoritesDao()
+//    private val favoritesDao: FavoritesDAO = application.favoritesDatabase.favoritesDao()
+
+    private val favoritesRepo = repository.FavoritesRepo()
+    private val remoteRepo = repository.RemoteRepo()
 
     private val _cocktailLiveData = MutableLiveData<Cocktail>()
     val cocktailLiveData: LiveData<Cocktail> = _cocktailLiveData
@@ -32,7 +34,7 @@ class CocktailOverviewViewModel(private val application: CocktailOverviewApplica
     private val _statusLivaData = MutableLiveData<Status>()
     val statusLivaData: LiveData<Status> = _statusLivaData
 
-    private val retrofitService = CocktailDbApi.retrofitService
+//    private val retrofitService = CocktailDbApi.retrofitService
 
     private var databaseItem: DatabaseItem? = null
 
@@ -51,14 +53,15 @@ class CocktailOverviewViewModel(private val application: CocktailOverviewApplica
                 databaseItem = null
                 thumbnailBitmap = null
                 try {
-                    val cocktailList = retrofitService.getCocktailById(id)
-                    if(cocktailList.responseData.isNullOrEmpty()) {
+                    val currentCocktail = remoteRepo.getById(id)
+
+                    if(currentCocktail == null) {
                         _statusLivaData.value = Status.ERROR
                         Log.d(TAG, "${_statusLivaData.value}")
                         this.cancel()
                         return@launch
                     }
-                    val currentCocktail = cocktailList.responseData[0]
+//                    val currentCocktail = cocktailList.responseData[0]
 
                     withContext(Dispatchers.IO) {
                         val loader = ImageLoader(application.applicationContext)
@@ -69,10 +72,10 @@ class CocktailOverviewViewModel(private val application: CocktailOverviewApplica
 
                         val result = (loader.execute(request) as SuccessResult).drawable
                         thumbnailBitmap = (result as BitmapDrawable).bitmap
-                        currentCocktail.isFavorite = favoritesDao.isRowExist(currentCocktail.id?.toInt()!!)
+                        currentCocktail.isFavorite = favoritesRepo.isFavorite(currentCocktail.id?.toInt()!!)
                     }
 
-                    _cocktailLiveData.value = currentCocktail
+                    _cocktailLiveData.value = currentCocktail!!
                     databaseItem = createDatabaseItem()
 
                     _statusLivaData.value = Status.OK
@@ -91,34 +94,29 @@ class CocktailOverviewViewModel(private val application: CocktailOverviewApplica
 
 
     private fun createDatabaseItem(): DatabaseItem {
-        val localIngredientsList = LinkedList<String>()
+        val localIngredientsList = ArrayList<String>()
         for (ingredient in cocktailLiveData.value?.ingredientList!!) {
             if (!ingredient.isNullOrEmpty()) {
                 localIngredientsList.add(ingredient)
             }
         }
-        val databaseItem = DatabaseItem(
+        return DatabaseItem(
             cocktailLiveData.value?.id?.toInt()!!,
             cocktailLiveData.value?.name!!,
             cocktailLiveData.value?.thumbnailUrl!!,
             null
-//            cocktailLiveData.value?.alcoholic!!,
-//            cocktailLiveData.value?.category!!,
-//            cocktailLiveData.value?.glass!!,
-//            localIngredientsList
         )
-        return databaseItem
     }
 
     fun addToFavorite() {
         viewModelScope.launch {
-            databaseItem?.let { favoritesDao.insertWithTimestamp(it) }
+            databaseItem?.let { favoritesRepo.add(it) }
         }
     }
 
     fun deleteFromFavorite() {
         viewModelScope.launch {
-            databaseItem?.let { favoritesDao.delete(it) }
+            databaseItem?.let { favoritesRepo.remove(it) }
         }
     }
 
@@ -127,11 +125,11 @@ class CocktailOverviewViewModel(private val application: CocktailOverviewApplica
 /**
  * Factory class to instantiate the [ViewModel] instance.
  */
-class CocktailOverviewViewModelFactory(private val application: CocktailOverviewApplication) : ViewModelProvider.Factory {
+class CocktailOverviewViewModelFactory(private val repository: Repository, private val application: CocktailOverviewApplication) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CocktailOverviewViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return CocktailOverviewViewModel(application) as T
+            return CocktailOverviewViewModel(repository, application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

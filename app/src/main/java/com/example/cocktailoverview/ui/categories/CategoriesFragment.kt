@@ -9,39 +9,40 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
+import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.databinding.CategoriesFragmentBinding
 import com.example.cocktailoverview.data.Status
+import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.ui.adapters.CategoriesAdapter
 
-private const val TAG = "CategoriesFrag"
 class CategoriesFragment : Fragment() {
 
     private val viewModel: CategoriesViewModel by viewModels {
-        CategoriesViewModelFactory()
+        CategoriesViewModelFactory(repository)
     }
 
     private var _binding: CategoriesFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: CategoriesAdapter
     private lateinit var cocktailList: List<Cocktail>
+    private lateinit var repository: Repository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = CategoriesFragmentBinding.inflate(inflater, container, false)
         binding.categoriesRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = emptyList()
         adapter = CategoriesAdapter(cocktailList) {position -> onListItemClick(position)}
         binding.categoriesRecycler.adapter = adapter
-//        binding.categoriesRecycler.setHasFixedSize(true)
-
+        repository = Repository(CocktailDbApi.retrofitService, activity?.application as CocktailOverviewApplication)
         return binding.root
     }
 
     private fun onListItemClick(position: Int) {
-        Log.d(TAG, "onListItemClick: ${cocktailList[position].category}")
 
         val category = cocktailList[position].category
         val action = CategoriesFragmentDirections.actionNavigationCategoriesToNavigationCategoryItems(category)
@@ -52,9 +53,8 @@ class CategoriesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.statusLivaData.observe(viewLifecycleOwner, { status ->
-            Log.d(TAG, "categories load status: $status")
-            when(status!!) {
+        viewModel.statusLivaData.observe(viewLifecycleOwner) { status ->
+            when (status!!) {
                 Status.UNDEFINED -> {
                     binding.categoriesRecycler.visibility = View.GONE
                     binding.categoriesProgressBar.visibility = View.GONE
@@ -63,10 +63,10 @@ class CategoriesFragment : Fragment() {
                 Status.OK -> {
                     binding.categoriesErrorTextView.visibility = View.GONE
                     binding.categoriesProgressBar.visibility = View.GONE
-                    viewModel.categoriesLiveData.observe(viewLifecycleOwner, {cocktails ->
+                    viewModel.categoriesLiveData.observe(viewLifecycleOwner) { cocktails ->
                         cocktailList = cocktails
                         adapter.updateList(cocktailList)
-                    })
+                    }
                     binding.categoriesRecycler.visibility = View.VISIBLE
                 }
                 Status.LOADING -> {
@@ -79,8 +79,13 @@ class CategoriesFragment : Fragment() {
                     binding.categoriesProgressBar.visibility = View.GONE
                     binding.categoriesErrorTextView.visibility = View.VISIBLE
                 }
+                else -> {
+                    binding.categoriesRecycler.visibility = View.GONE
+                    binding.categoriesProgressBar.visibility = View.GONE
+                    binding.categoriesErrorTextView.visibility = View.VISIBLE
+                }
             }
-        })
+        }
     }
 
 

@@ -11,9 +11,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.R
 import com.example.cocktailoverview.data.Cocktail
+import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.data.Status
+import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.databinding.FragmentCategoryItemsBinding
 import com.example.cocktailoverview.ui.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
@@ -27,7 +30,7 @@ private const val TAG = "CatItemsFrag"
 class CategoryItemsFragment : Fragment() {
 
     private val viewModel: CategoryItemsViewModel by viewModels {
-        CategoryItemsViewModelFactory()
+        CategoryItemsViewModelFactory(repository)
     }
 
     private val args: CategoryItemsFragmentArgs by navArgs()
@@ -38,6 +41,7 @@ class CategoryItemsFragment : Fragment() {
     private var category: String? = null
     private lateinit var skeleton: Skeleton
     private lateinit var divider: MaterialDividerItemDecoration
+    private lateinit var repository: Repository
     private var scale: Float = 0f
     private var dividerInsetStartPx: Int = 0
 
@@ -55,11 +59,13 @@ class CategoryItemsFragment : Fragment() {
         binding.categoryItemsRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = ArrayList()
 
+        repository = Repository(CocktailDbApi.retrofitService, activity?.application as CocktailOverviewApplication)
+
         // adapter setup
-        adapter = CocktailsAdapter(context!!, cocktailList) {position -> onListItemClick(position)}
+        adapter = CocktailsAdapter(requireContext(), cocktailList) {position -> onListItemClick(position)}
 
         // divider setup
-        divider = MaterialDividerItemDecoration(context!!, LinearLayoutManager.VERTICAL)
+        divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         scale = resources.displayMetrics.density
         dividerInsetStartPx = (85 * scale + 0.5f).toInt()
         divider.dividerInsetStart = dividerInsetStartPx
@@ -72,8 +78,8 @@ class CategoryItemsFragment : Fragment() {
         // skeleton setup
         skeleton = binding.categoryItemsRecycler.applySkeleton(R.layout.cocktail_item, 7)
         skeleton.maskCornerRadius = 80.0f
-        skeleton.maskColor = ContextCompat.getColor(context!!, R.color.lightGray)
-        skeleton.shimmerColor = ContextCompat.getColor(context!!, R.color.gray)
+        skeleton.maskColor = ContextCompat.getColor(requireContext(), R.color.lightGray)
+        skeleton.shimmerColor = ContextCompat.getColor(requireContext(), R.color.gray)
         skeleton.showShimmer = true
     }
 
@@ -81,18 +87,18 @@ class CategoryItemsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         category = args.category
         category?.let { viewModel.fetchCategoryItems(it) }
-        viewModel.statusLivaData.observe(viewLifecycleOwner, {status ->
+        viewModel.statusLivaData.observe(viewLifecycleOwner) { status ->
             Log.d(TAG, "categories load status: $status")
-            when(status!!) {
+            when (status!!) {
                 Status.UNDEFINED -> {
                     binding.skeletonLayout.visibility = View.GONE
                 }
                 Status.OK -> {
-                    viewModel.categoryItemsLiveData.observe(viewLifecycleOwner, {cocktails ->
+                    viewModel.categoryItemsLiveData.observe(viewLifecycleOwner) { cocktails ->
                         cocktailList = cocktails
                         Log.d(TAG, "$cocktailList")
                         adapter.updateList(cocktailList)
-                    })
+                    }
                     skeleton.showOriginal()
                 }
                 Status.LOADING -> {
@@ -102,7 +108,7 @@ class CategoryItemsFragment : Fragment() {
                     binding.skeletonLayout.visibility = View.GONE
                 }
             }
-        })
+        }
 
 
     }

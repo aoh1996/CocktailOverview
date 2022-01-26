@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
+import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.data.db.DatabaseItem
 import com.example.cocktailoverview.data.db.FavoritesDAO
 import com.example.cocktailoverview.data.db.toCocktail
@@ -11,9 +12,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 private const val TAG = "FavoritesVM"
-class FavoritesViewModel(private val application: CocktailOverviewApplication) : AndroidViewModel(application) {
+class FavoritesViewModel(private val repository: Repository) : ViewModel() {
 
-    private val favoritesDao: FavoritesDAO = application.favoritesDatabase.favoritesDao()
+//    private val favoritesDao: FavoritesDAO = application.favoritesDatabase.favoritesDao()
+
+    private val favoritesRepo = repository.FavoritesRepo()
 
     private val _cocktailsLiveData = MutableLiveData<ArrayList<Cocktail>>()
     val cocktailsLiveData: LiveData<ArrayList<Cocktail>> = _cocktailsLiveData
@@ -29,10 +32,9 @@ class FavoritesViewModel(private val application: CocktailOverviewApplication) :
 
         cocktailList = arrayListOf()
         viewModelScope.launch {
-            val list = favoritesDao.getCocktails()
+            val list = favoritesRepo.getAll()
             for (item in list) {
                 cocktailList.add(
-//                    Cocktail(cocktail.id.toString(), cocktail.name, cocktail.thumbnailUrl)
                 item.toCocktail()
                 )
             }
@@ -45,8 +47,8 @@ class FavoritesViewModel(private val application: CocktailOverviewApplication) :
     fun removeFromFavorites(id: String?) {
         if (!id.isNullOrEmpty()) {
             viewModelScope.launch {
-                val item = favoritesDao.getCocktail(id.toInt())
-                favoritesDao.delete(item)
+                val item = favoritesRepo.getById(id.toInt())
+                favoritesRepo.remove(item)
             }
         }
     }
@@ -55,11 +57,11 @@ class FavoritesViewModel(private val application: CocktailOverviewApplication) :
 
 
 
-class FavoritesViewModelFactory(private val application: CocktailOverviewApplication) : ViewModelProvider.Factory {
+class FavoritesViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FavoritesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return FavoritesViewModel(application) as T
+            return FavoritesViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

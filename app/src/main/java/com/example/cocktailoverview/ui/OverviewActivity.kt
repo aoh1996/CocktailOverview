@@ -15,13 +15,16 @@ import coil.load
 import coil.transform.RoundedCornersTransformation
 import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.R
+import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.databinding.ActivityOverviewBinding
 import com.example.cocktailoverview.data.Status
+import com.example.cocktailoverview.data.network.CocktailDbApi
 
 class OverviewActivity : AppCompatActivity() {
 
     private val viewModel: CocktailOverviewViewModel by viewModels {
         CocktailOverviewViewModelFactory(
+            repository,
             application as CocktailOverviewApplication
         )
 
@@ -37,11 +40,14 @@ class OverviewActivity : AppCompatActivity() {
     private lateinit var alcoholicTextView: TextView
     private lateinit var glassTextView: TextView
     private lateinit var ingredientListTextView: TextView
+    private lateinit var repository: Repository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityOverviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        repository = Repository(CocktailDbApi.retrofitService, application as CocktailOverviewApplication)
 
         val args = intent.extras
         val cocktailId = args?.getString("cocktail_id")
@@ -56,21 +62,23 @@ class OverviewActivity : AppCompatActivity() {
 
     override fun onResume() {
 
-        viewModel.statusLivaData.observe(this, {status ->
-            when(status!!) {
+        viewModel.statusLivaData.observe(this) { status ->
+            when (status!!) {
                 Status.OK -> {
                     binding.cocktailErrorTextView.visibility = View.GONE
                     binding.cocktailProgressBar.visibility = View.GONE
                     binding.cocktailInfoLayout.visibility = View.VISIBLE
 
-                    viewModel.cocktailLiveData.observe(this, { cocktail ->
-                        if(cocktail!!.thumbnailUrl!!.isEmpty()) {
-                            thumbImageView.load(R.drawable.cocktail_mockup) {transformations(
-                                RoundedCornersTransformation(50f)
-                            )}
+                    viewModel.cocktailLiveData.observe(this) { cocktail ->
+                        if (cocktail!!.thumbnailUrl!!.isEmpty()) {
+                            thumbImageView.load(R.drawable.cocktail_mockup) {
+                                transformations(
+                                    RoundedCornersTransformation(50f)
+                                )
+                            }
                         } else {
                             val imageUri = Uri.parse(cocktail.thumbnailUrl)
-                            thumbImageView.load(viewModel.thumbnailBitmap){
+                            thumbImageView.load(viewModel.thumbnailBitmap) {
                                 placeholder(R.drawable.loading_animation)
                                 transformations(RoundedCornersTransformation(50f))
 //                                error(R.drawable.ic_baseline_broken_image_24)
@@ -97,16 +105,17 @@ class OverviewActivity : AppCompatActivity() {
                         idTextView.text = String.format(getString(R.string.id), cocktail.id)
                         categoryTextView.text = cocktail.category
                         alcoholicTextView.text = cocktail.alcoholic
-                        glassTextView.text = String.format(getString(R.string.glass), cocktail.glass)
+                        glassTextView.text =
+                            String.format(getString(R.string.glass), cocktail.glass)
                         ingredientListTextView.text = ""
                         for (i in 1..cocktail.ingredientList.size) {
-                            if (!cocktail.ingredientList[i-1].isNullOrEmpty()) {
-                                ingredientListTextView.append("$i. ${cocktail.ingredientList[i-1]} \n")
+                            if (!cocktail.ingredientList[i - 1].isNullOrEmpty()) {
+                                ingredientListTextView.append("$i. ${cocktail.ingredientList[i - 1]} \n")
                             }
                         }
                         ingredientListTextView.text.trim()
 
-                    })
+                    }
                 }
                 Status.LOADING -> {
                     binding.cocktailInfoLayout.visibility = View.GONE
@@ -119,7 +128,7 @@ class OverviewActivity : AppCompatActivity() {
                     binding.cocktailErrorTextView.visibility = View.VISIBLE
                 }
             }
-        })
+        }
         super.onResume()
     }
 

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
+import com.example.cocktailoverview.data.Repository
+import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.databinding.FavoritesFragmentBinding
 import com.example.cocktailoverview.ui.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
@@ -25,7 +27,7 @@ class FavoritesFragment : Fragment() {
 
 
     private val viewModel: FavoritesViewModel by viewModels {
-        FavoritesViewModelFactory(activity?.application as CocktailOverviewApplication)
+        FavoritesViewModelFactory(repository)
     }
 
     private var _binding: FavoritesFragmentBinding? = null
@@ -33,6 +35,7 @@ class FavoritesFragment : Fragment() {
     private lateinit var adapter: CocktailsAdapter
     private lateinit var cocktailList: ArrayList<Cocktail>
     private lateinit var divider: MaterialDividerItemDecoration
+    private lateinit var repository: Repository
     private var scale: Float = 0f
     private var dividerInsetStartPx: Int = 0
 
@@ -49,11 +52,13 @@ class FavoritesFragment : Fragment() {
         binding.favoritesRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = arrayListOf()
 
+        repository = Repository(CocktailDbApi.retrofitService, activity?.application as CocktailOverviewApplication)
+
         //adapter setup
-        adapter = CocktailsAdapter(context!!, cocktailList) {position -> onListItemClick(position)}
+        adapter = CocktailsAdapter(requireContext(), cocktailList) {position -> onListItemClick(position)}
 
         //divider setup
-        divider = MaterialDividerItemDecoration(context!!, LinearLayoutManager.VERTICAL)
+        divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         scale = resources.displayMetrics.density
         dividerInsetStartPx = (85 * scale + 0.5f).toInt()
         divider.dividerInsetStart = dividerInsetStartPx
@@ -64,7 +69,7 @@ class FavoritesFragment : Fragment() {
         binding.favoritesRecycler.adapter = adapter
 
         // swipe to delete
-        val swipeHandler = object : SwipeToDeleteCallback(context!!) {
+        val swipeHandler = object : SwipeToDeleteCallback(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val adapter = binding.favoritesRecycler.adapter as CocktailsAdapter
                 val position = viewHolder.bindingAdapterPosition
@@ -80,11 +85,11 @@ class FavoritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.cocktailsLiveData.observe(viewLifecycleOwner, {cocktails ->
+        viewModel.cocktailsLiveData.observe(viewLifecycleOwner) { cocktails ->
             cocktailList = cocktails
             adapter.updateList(cocktailList)
             Log.d(TAG, "onViewCreated: $cocktailList")
-        })
+        }
     }
 
     override fun onResume() {

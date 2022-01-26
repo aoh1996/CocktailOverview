@@ -3,6 +3,7 @@ package com.example.cocktailoverview.ui.categories
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.cocktailoverview.data.Cocktail
+import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.data.Status
 import kotlinx.coroutines.cancel
@@ -12,7 +13,7 @@ import java.lang.Exception
 
 private const val TAG = "CategoriesVM"
 
-class CategoriesViewModel : ViewModel() {
+class CategoriesViewModel(private val repository: Repository) : ViewModel() {
 
     private val _categoriesLiveData = MutableLiveData<List<Cocktail>>()
     val categoriesLiveData: LiveData<List<Cocktail>> = _categoriesLiveData
@@ -20,7 +21,9 @@ class CategoriesViewModel : ViewModel() {
     private val _statusLivaData = MutableLiveData<Status>()
     val statusLivaData: LiveData<Status> = _statusLivaData
 
-    private val retrofitService = CocktailDbApi.retrofitService
+//    private val retrofitService = CocktailDbApi.retrofitService
+
+    private val remoteRepo = repository.RemoteRepo()
 
     init {
         Log.d(TAG, "init viewModel")
@@ -44,13 +47,13 @@ class CategoriesViewModel : ViewModel() {
                 try {
 
 
-                    val categoriesCocktailList = retrofitService.getCategories()
-                    if(categoriesCocktailList.responseData.isNullOrEmpty()) {
+                    val categoriesCocktailList = remoteRepo.getCategories()
+                    if(categoriesCocktailList.isNullOrEmpty()) {
                         _statusLivaData.value = Status.NOT_FOUND
                         Log.d(TAG, "${_statusLivaData.value}")
                         this.cancel()
                     }
-                    for (cocktail in categoriesCocktailList.responseData!!) {
+                    for (cocktail in categoriesCocktailList!!) {
                         categories.add(cocktail)
                         Log.d(TAG, "${cocktail.category}")
                     }
@@ -74,11 +77,11 @@ class CategoriesViewModel : ViewModel() {
     }
 
 }
-class CategoriesViewModelFactory() : ViewModelProvider.Factory {
+class CategoriesViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CategoriesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return CategoriesViewModel() as T
+            return CategoriesViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
