@@ -2,11 +2,10 @@ package com.example.cocktailoverview.data
 
 import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.db.DatabaseItem
-import com.example.cocktailoverview.data.network.CocktailDbApiService
 
-class Repository (retrofitService: CocktailDbApiService, application: CocktailOverviewApplication) {
+class Repository private constructor(application: CocktailOverviewApplication) {
 
-    private val remoteSource = retrofitService
+    private val remoteSource = application.retrofit
     private val historySource = application.historyDatabase.historyDao()
     private val favoriteSource = application.favoritesDatabase.favoritesDao()
 
@@ -71,6 +70,22 @@ class Repository (retrofitService: CocktailDbApiService, application: CocktailOv
 
         suspend fun getCategoryItems(category: String): List<Cocktail>? {
             return remoteSource.getCategoryItems(category).responseData
+        }
+    }
+
+    companion object {
+        @Volatile
+        private var INSTANCE: Repository? = null
+
+        fun getRepository(application: CocktailOverviewApplication): Repository {
+            // if the INSTANCE is not null, then return it,
+            // if it is, then create repo
+            return INSTANCE ?: synchronized(this) {
+                val instance = Repository(application)
+                INSTANCE = instance
+                // return instance
+                instance
+            }
         }
     }
 

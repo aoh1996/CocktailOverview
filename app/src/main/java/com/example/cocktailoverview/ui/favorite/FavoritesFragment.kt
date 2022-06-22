@@ -14,9 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Repository
-import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.databinding.FavoritesFragmentBinding
-import com.example.cocktailoverview.ui.OverviewActivity
+import com.example.cocktailoverview.ui.overview.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
 import com.example.cocktailoverview.ui.adapters.SwipeToDeleteCallback
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -52,7 +51,7 @@ class FavoritesFragment : Fragment() {
         binding.favoritesRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = arrayListOf()
 
-        repository = Repository(CocktailDbApi.retrofitService, activity?.application as CocktailOverviewApplication)
+        repository = Repository.getRepository(activity?.application as CocktailOverviewApplication)
 
         //adapter setup
         adapter = CocktailsAdapter(requireContext(), cocktailList) {position -> onListItemClick(position)}

@@ -2,19 +2,13 @@ package com.example.cocktailoverview.ui.favorite
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.cocktailoverview.CocktailOverviewApplication
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Repository
-import com.example.cocktailoverview.data.db.DatabaseItem
-import com.example.cocktailoverview.data.db.FavoritesDAO
 import com.example.cocktailoverview.data.db.toCocktail
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 private const val TAG = "FavoritesVM"
 class FavoritesViewModel(private val repository: Repository) : ViewModel() {
-
-//    private val favoritesDao: FavoritesDAO = application.favoritesDatabase.favoritesDao()
 
     private val favoritesRepo = repository.FavoritesRepo()
 

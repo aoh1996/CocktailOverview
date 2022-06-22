@@ -14,10 +14,6 @@ data class DatabaseItem(
     @ColumnInfo(name = "url")
     val thumbnailUrl: String,
     @ColumnInfo(name = "created_at") var createdAt: Long?,
-//    val category: String,
-//    val alcoholic: String,
-//    val glass: String,
-//    val ingredients: List<String>
 )
 
 fun DatabaseItem.toCocktail(): Cocktail {

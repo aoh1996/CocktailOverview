@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.cocktailoverview.R
 import com.example.cocktailoverview.databinding.ActivityHomeBinding
+import com.example.cocktailoverview.ui.onboarding.OnboardingActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 private val TAG = "HomeActivity"

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Repository
-import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.data.Status
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -13,15 +12,13 @@ import java.lang.Exception
 
 private const val TAG = "CategoriesVM"
 
-class CategoriesViewModel(private val repository: Repository) : ViewModel() {
+class CategoriesViewModel(repository: Repository) : ViewModel() {
 
     private val _categoriesLiveData = MutableLiveData<List<Cocktail>>()
     val categoriesLiveData: LiveData<List<Cocktail>> = _categoriesLiveData
 
     private val _statusLivaData = MutableLiveData<Status>()
     val statusLivaData: LiveData<Status> = _statusLivaData
-
-//    private val retrofitService = CocktailDbApi.retrofitService
 
     private val remoteRepo = repository.RemoteRepo()
 

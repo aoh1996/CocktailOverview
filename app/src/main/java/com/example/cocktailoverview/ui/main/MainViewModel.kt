@@ -16,9 +16,7 @@ import java.lang.Exception
 
 private const val TAG = "MainVM"
 
-class MainViewModel(private val repository: Repository) : ViewModel() {
-
-//    private val historyDao: HistoryDAO = application.historyDatabase.historyDao()
+class MainViewModel(repository: Repository) : ViewModel() {
 
     private val historyRepo = repository.HistoryRepo()
     private val remoteRepo = repository.RemoteRepo()

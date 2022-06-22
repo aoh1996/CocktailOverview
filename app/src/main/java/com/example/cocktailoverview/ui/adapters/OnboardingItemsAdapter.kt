@@ -1,4 +1,4 @@
-package com.example.cocktailoverview.ui
+package com.example.cocktailoverview.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.example.cocktailoverview.OnboardingItem
+import com.example.cocktailoverview.ui.onboarding.OnboardingItem
 import com.example.cocktailoverview.R
 
 class OnboardingItemsAdapter(private val onboardingItems: List<OnboardingItem>) :
@@ -16,9 +16,9 @@ class OnboardingItemsAdapter(private val onboardingItems: List<OnboardingItem>) 
 
     inner class OnboardingItemsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val imageOnboarding = view.findViewById<ImageView>(R.id.imageOnboarding)
-        val textTitle = view.findViewById<TextView>(R.id.textTitle)
-        val textDescription = view.findViewById<TextView>(R.id.textDescription)
+        private val imageOnboarding: ImageView = view.findViewById<ImageView>(R.id.imageOnboarding)
+        private val textTitle: TextView = view.findViewById<TextView>(R.id.textTitle)
+        private val textDescription: TextView = view.findViewById<TextView>(R.id.textDescription)
 
         fun bind (onboardingItem: OnboardingItem) {
             imageOnboarding.load(onboardingItem.onboardingImage) {

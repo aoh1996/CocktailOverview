@@ -1,4 +1,4 @@
-package com.example.cocktailoverview.ui
+package com.example.cocktailoverview.ui.overview
 
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -21,9 +21,8 @@ import java.util.*
 
 private const val TAG = "CocktailOverviewVM"
 
-class CocktailOverviewViewModel(private val repository: Repository, private val application: CocktailOverviewApplication) : AndroidViewModel(application) {
+class CocktailOverviewViewModel(repository: Repository, private val application: CocktailOverviewApplication) : AndroidViewModel(application) {
 
-//    private val favoritesDao: FavoritesDAO = application.favoritesDatabase.favoritesDao()
 
     private val favoritesRepo = repository.FavoritesRepo()
     private val remoteRepo = repository.RemoteRepo()
@@ -34,7 +33,6 @@ class CocktailOverviewViewModel(private val repository: Repository, private val 
     private val _statusLivaData = MutableLiveData<Status>()
     val statusLivaData: LiveData<Status> = _statusLivaData
 
-//    private val retrofitService = CocktailDbApi.retrofitService
 
     private var databaseItem: DatabaseItem? = null
 
@@ -75,7 +73,7 @@ class CocktailOverviewViewModel(private val repository: Repository, private val 
                         currentCocktail.isFavorite = favoritesRepo.isFavorite(currentCocktail.id?.toInt()!!)
                     }
 
-                    _cocktailLiveData.value = currentCocktail!!
+                    _cocktailLiveData.value = currentCocktail
                     databaseItem = createDatabaseItem()
 
                     _statusLivaData.value = Status.OK

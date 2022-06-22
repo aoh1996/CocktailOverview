@@ -15,10 +15,8 @@ import com.example.cocktailoverview.R
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.data.Status
-import com.example.cocktailoverview.data.network.CocktailDbApi
-import com.example.cocktailoverview.data.network.CocktailDbApiService
 import com.example.cocktailoverview.databinding.MainFragmentBinding
-import com.example.cocktailoverview.ui.OverviewActivity
+import com.example.cocktailoverview.ui.overview.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
 import com.example.cocktailoverview.ui.adapters.SwipeToDeleteCallback
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -44,7 +42,7 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        repo = Repository(CocktailDbApi.retrofitService, activity?.application as CocktailOverviewApplication)
+        repo = Repository.getRepository(activity?.application as CocktailOverviewApplication)
         Log.d(TAG, "onCreate: ")
     }
 
@@ -115,11 +113,11 @@ class MainFragment : Fragment() {
                     binding.mainErrorTextView.visibility = View.GONE
                     binding.mainProgressBar.visibility = View.GONE
                     binding.mainNotFoundTextView.visibility = View.GONE
-                    viewModel.cocktailsLiveData.observe(viewLifecycleOwner, { cocktails ->
+                    viewModel.cocktailsLiveData.observe(viewLifecycleOwner) { cocktails ->
                         cocktailList = cocktails
                         Log.d(TAG, "$cocktailList")
                         adapter.updateList(cocktailList)
-                    })
+                    }
                     binding.mainRecycler.visibility = View.VISIBLE
                 }
                 Status.LOADING -> {

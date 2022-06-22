@@ -1,7 +1,6 @@
 package com.example.cocktailoverview.data.db
 
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoritesDAO {

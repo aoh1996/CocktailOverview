@@ -1,4 +1,4 @@
-package com.example.cocktailoverview.ui
+package com.example.cocktailoverview.ui.onboarding
 
 
 import android.content.Intent
@@ -14,9 +14,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.example.cocktailoverview.OnboardingItem
 import com.example.cocktailoverview.R
 import com.example.cocktailoverview.databinding.ActivityOnboardingBinding
+import com.example.cocktailoverview.ui.HomeActivity
+import com.example.cocktailoverview.ui.overview.OverviewActivity
+import com.example.cocktailoverview.ui.adapters.OnboardingItemsAdapter
 import com.google.android.material.button.MaterialButton
 import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 import kotlin.system.exitProcess

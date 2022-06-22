@@ -16,9 +16,8 @@ import com.example.cocktailoverview.R
 import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.data.Status
-import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.databinding.FragmentCategoryItemsBinding
-import com.example.cocktailoverview.ui.OverviewActivity
+import com.example.cocktailoverview.ui.overview.OverviewActivity
 import com.example.cocktailoverview.ui.adapters.CocktailsAdapter
 import com.faltenreich.skeletonlayout.Skeleton
 import com.faltenreich.skeletonlayout.applySkeleton
@@ -59,7 +58,7 @@ class CategoryItemsFragment : Fragment() {
         binding.categoryItemsRecycler.layoutManager = LinearLayoutManager(context)
         cocktailList = ArrayList()
 
-        repository = Repository(CocktailDbApi.retrofitService, activity?.application as CocktailOverviewApplication)
+        repository = Repository.getRepository(activity?.application as CocktailOverviewApplication)
 
         // adapter setup
         adapter = CocktailsAdapter(requireContext(), cocktailList) {position -> onListItemClick(position)}

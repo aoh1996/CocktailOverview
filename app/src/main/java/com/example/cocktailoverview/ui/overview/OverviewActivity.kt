@@ -1,4 +1,4 @@
-package com.example.cocktailoverview.ui
+package com.example.cocktailoverview.ui.overview
 
 import android.content.res.Configuration
 import android.graphics.Color
@@ -18,7 +18,6 @@ import com.example.cocktailoverview.R
 import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.databinding.ActivityOverviewBinding
 import com.example.cocktailoverview.data.Status
-import com.example.cocktailoverview.data.network.CocktailDbApi
 
 class OverviewActivity : AppCompatActivity() {
 
@@ -47,7 +46,7 @@ class OverviewActivity : AppCompatActivity() {
         _binding = ActivityOverviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        repository = Repository(CocktailDbApi.retrofitService, application as CocktailOverviewApplication)
+        repository = Repository.getRepository(application as CocktailOverviewApplication)
 
         val args = intent.extras
         val cocktailId = args?.getString("cocktail_id")

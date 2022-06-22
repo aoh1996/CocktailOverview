@@ -13,12 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CocktailOverview">
         <activity
-            android:name=".ui.OverviewActivity"
+            android:name=".ui.overview.OverviewActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/FullScreen"/>
         <activity
-            android:name=".ui.OnboardingActivity"
+            android:name=".ui.onboarding.OnboardingActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/FullScreenOnboarding"/>

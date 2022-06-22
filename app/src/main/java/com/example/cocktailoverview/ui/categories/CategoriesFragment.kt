@@ -1,7 +1,6 @@
 package com.example.cocktailoverview.ui.categories
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import com.example.cocktailoverview.data.Cocktail
 import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.databinding.CategoriesFragmentBinding
 import com.example.cocktailoverview.data.Status
-import com.example.cocktailoverview.data.network.CocktailDbApi
 import com.example.cocktailoverview.ui.adapters.CategoriesAdapter
 
 class CategoriesFragment : Fragment() {
@@ -38,7 +36,7 @@ class CategoriesFragment : Fragment() {
         cocktailList = emptyList()
         adapter = CategoriesAdapter(cocktailList) {position -> onListItemClick(position)}
         binding.categoriesRecycler.adapter = adapter
-        repository = Repository(CocktailDbApi.retrofitService, activity?.application as CocktailOverviewApplication)
+        repository = Repository.getRepository(activity?.application as CocktailOverviewApplication)
         return binding.root
     }
 

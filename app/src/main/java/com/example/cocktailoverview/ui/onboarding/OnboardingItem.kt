@@ -1,4 +1,4 @@
-package com.example.cocktailoverview
+package com.example.cocktailoverview.ui.onboarding
 
 data class OnboardingItem(
     val onboardingImage: Int,
