@@ -1,6 +1,7 @@
 package com.example.cocktailoverview.ui.categories
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,8 @@ import com.example.cocktailoverview.data.Repository
 import com.example.cocktailoverview.databinding.CategoriesFragmentBinding
 import com.example.cocktailoverview.data.Status
 import com.example.cocktailoverview.ui.adapters.CategoriesAdapter
+
+private const val TAG = "CategoriesFrag"
 
 class CategoriesFragment : Fragment() {
 
@@ -48,8 +51,15 @@ class CategoriesFragment : Fragment() {
 
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            swipeRefresh.setOnRefreshListener {
+                    viewModel.getCategories()
+            }
+        }
 
         viewModel.statusLivaData.observe(viewLifecycleOwner) { status ->
             when (status!!) {
@@ -57,6 +67,7 @@ class CategoriesFragment : Fragment() {
                     binding.categoriesRecycler.visibility = View.GONE
                     binding.categoriesProgressBar.visibility = View.GONE
                     binding.categoriesErrorTextView.visibility = View.GONE
+                    binding.swipeRefresh.isRefreshing = false
                 }
                 Status.OK -> {
                     binding.categoriesErrorTextView.visibility = View.GONE
@@ -66,21 +77,25 @@ class CategoriesFragment : Fragment() {
                         adapter.updateList(cocktailList)
                     }
                     binding.categoriesRecycler.visibility = View.VISIBLE
+                    binding.swipeRefresh.isRefreshing = false
                 }
                 Status.LOADING -> {
                     binding.categoriesRecycler.visibility = View.GONE
                     binding.categoriesErrorTextView.visibility = View.GONE
                     binding.categoriesProgressBar.visibility = View.VISIBLE
+                    binding.swipeRefresh.isRefreshing = true
                 }
                 Status.ERROR -> {
                     binding.categoriesRecycler.visibility = View.GONE
                     binding.categoriesProgressBar.visibility = View.GONE
                     binding.categoriesErrorTextView.visibility = View.VISIBLE
+                    binding.swipeRefresh.isRefreshing = false
                 }
                 else -> {
                     binding.categoriesRecycler.visibility = View.GONE
                     binding.categoriesProgressBar.visibility = View.GONE
                     binding.categoriesErrorTextView.visibility = View.VISIBLE
+                    binding.swipeRefresh.isRefreshing = false
                 }
             }
         }
@@ -90,6 +105,27 @@ class CategoriesFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onPause() {
+        Log.d(TAG, "onPause")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d(TAG, "onStop")
+//        activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy: ")
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        Log.d(TAG, "onDetach: ")
+        super.onDetach()
     }
 
 }

@@ -61,8 +61,13 @@
         <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/drawable/ic_xmlid_810_2_1.xml" value="0.296" />
         <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/drawable/rounded_outline.xml" value="0.317" />
         <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/drawable/view_pager_background.xml" value="0.317" />
+        <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/layout/activity_home.xml" value="0.35038363171355497" />
         <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/layout/activity_onboarding.xml" value="0.28940217391304346" />
         <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/layout/activity_overview.xml" value="0.3625" />
+        <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/layout/categories_fragment.xml" value="0.3625" />
+        <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/layout/fragment_categories_host.xml" value="0.3625" />
+        <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/menu/appbar_menu.xml" value="0.23333333333333334" />
+        <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/menu/bottom_nav_menu.xml" value="0.3625" />
         <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2" />
         <entry key="..\:/Users/andrey.evtushenko/StudioProjects/CocktailOverview/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2" />
       </map>

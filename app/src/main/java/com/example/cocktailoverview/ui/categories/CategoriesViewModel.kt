@@ -29,7 +29,7 @@ class CategoriesViewModel(repository: Repository) : ViewModel() {
 
     }
 
-    private fun getCategories() {
+    fun getCategories() {
 
         val categories = mutableListOf<Cocktail>()
         if (_statusLivaData.value == Status.ERROR || _statusLivaData.value == Status.UNDEFINED ||
